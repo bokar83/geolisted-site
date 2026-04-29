@@ -8,6 +8,7 @@
   <meta property="og:title" content="Signal Works — Your Business. In Every AI Answer."/>
   <meta property="og:description" content="Your competitors are already in the answer. You should be too."/>
   <meta property="og:image" content="img/hero-bg.png"/>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
@@ -63,8 +64,8 @@
     }
     body.cursor-hover #cursor { width: 48px; height: 48px; opacity: .12; }
     body.cursor-hover #cursor-ring { width: 64px; height: 64px; opacity: .7; border-color: var(--gold); }
-    body.cursor-link  #cursor { width: 32px; height: 32px; border-radius: 4px; background: var(--white); }
-    body.cursor-link  #cursor-ring { opacity: 0; }
+    body.cursor-link  #cursor { width: 14px; height: 14px; background: var(--signal); }
+    body.cursor-link  #cursor-ring { width: 48px; height: 48px; opacity: .7; border-color: var(--signal); }
 
     /* ── NAV ── */
     nav {
@@ -84,6 +85,16 @@
       letter-spacing: .04em; text-transform: uppercase;
     }
     .nav-logo span { color: var(--signal); }
+    .nav-links {
+      display: flex; align-items: center; gap: 36px;
+    }
+    .nav-link {
+      font-family: var(--f-body); font-size: .8rem; font-weight: 500;
+      color: var(--muted); letter-spacing: .04em;
+      transition: color .2s;
+    }
+    .nav-link:hover { color: var(--white); }
+    @media (max-width: 640px) { .nav-links { display: none; } }
     .nav-cta {
       font-family: var(--f-head); font-size: .76rem; font-weight: 700;
       color: var(--signal); background: transparent;
@@ -226,13 +237,10 @@
     @keyframes ticker-scroll {
       from { transform: translateX(0); }
       to   { transform: translateX(-50%); }
-    @keyframes ticker-scroll {
-      from { transform: translateX(0); }
-      to   { transform: translateX(-50%); }
     }
     @keyframes tw-blink { 0%,100%{opacity:1} 50%{opacity:0} }
     .hero-split-row {
-      position: relative; z-index: 2;
+      position: relative; z-index: 4;
       display: flex; justify-content: space-between; align-items: flex-end;
       margin-top: 48px; gap: 40px;
       opacity: 0;
@@ -750,7 +758,12 @@
 
 <!-- ── NAV ── -->
 <nav id="main-nav">
-  <div class="nav-logo">Signal<span>.</span>Works</div>
+  <a href="#hero" class="nav-logo">Signal<span>.</span>Works</a>
+  <div class="nav-links">
+    <a href="#how" class="nav-link">How It Works</a>
+    <a href="#demos" class="nav-link">Examples</a>
+    <a href="#faq" class="nav-link">FAQ</a>
+  </div>
   <a href="#capture" class="nav-cta">Get a Demo</a>
 </nav>
 
@@ -1079,7 +1092,7 @@
 </section>
 
 <!-- ── FAQ ── -->
-<section class="faq">
+<section class="faq" id="faq">
   <div class="faq-inner">
   <h2 class="faq-h2 reveal">Questions.</h2>
   <div class="faq-list">
