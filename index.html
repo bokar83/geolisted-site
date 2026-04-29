@@ -245,11 +245,16 @@
       margin-top: 48px; gap: 40px;
       opacity: 0;
     }
-    .hero-sub {
-      font-size: 1.05rem; color: var(--muted); line-height: 1.75;
-      max-width: 460px; font-weight: 300;
+    .hero-sub-stack {
+      display: flex; flex-direction: column; gap: 6px; max-width: 540px;
     }
-    .hero-sub strong { color: var(--white); font-weight: 500; }
+    .hero-sub-line {
+      font-family: var(--f-head); font-size: clamp(1.1rem, 1.8vw, 1.5rem);
+      font-weight: 700; line-height: 1.2; letter-spacing: -.01em;
+      color: var(--white);
+    }
+    .hero-sub-line.accent { color: var(--signal); }
+    .hero-sub-line.dim { color: var(--muted); font-weight: 400; font-size: clamp(.95rem, 1.4vw, 1.2rem); margin-top: 4px; }
     .hero-cta-group { display: flex; gap: 16px; align-items: center; flex-shrink: 0; }
     .btn-primary {
       font-family: var(--f-head); font-size: .9rem; font-weight: 700;
@@ -804,11 +809,11 @@
   </h1>
 
   <div class="hero-split-row" id="hero-split">
-    <p class="hero-sub">
-      Open ChatGPT right now. Type: <strong>"who is the best roofer in [your city]."</strong>
-      If your name is not in the answer, your competitor just got that call.
-      Signal Works puts you there. In two weeks.
-    </p>
+    <div class="hero-sub-stack">
+      <p class="hero-sub-line">Someone just asked ChatGPT who the best roofer in your city is.</p>
+      <p class="hero-sub-line accent">You were not in the answer.</p>
+      <p class="hero-sub-line dim">Signal Works fixes that. In two weeks.</p>
+    </div>
     <div class="hero-cta-group">
       <a href="#capture" class="btn-primary magnetic-btn">
         <span>Get My Free Demo</span>
