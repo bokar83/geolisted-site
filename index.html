@@ -1,0 +1,1582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Signal Works — Your Business. In Every AI Answer.</title>
+  <meta name="description" content="When someone asks ChatGPT, Perplexity, or Google AI who to call, does your business come up? Signal Works builds the AI presence that puts you in the answer."/>
+  <meta property="og:title" content="Signal Works — Your Business. In Every AI Answer."/>
+  <meta property="og:description" content="Your competitors are already in the answer. You should be too."/>
+  <meta property="og:image" content="img/hero-bg.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --ink:        #0B0F1A;
+      --ink-soft:   #141927;
+      --surface:    #1A2035;
+      --border:     rgba(255,255,255,.07);
+      --white:      #F0EEE8;
+      --muted:      rgba(240,238,232,.82);
+      --signal:     #00E5FF;
+      --signal-d:   #00B8CC;
+      --signal-glow: rgba(0,229,255,.18);
+      --gold:       #FFB830;
+      --f-head:     'Syne', sans-serif;
+      --f-body:     'Inter', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { background: var(--ink); scroll-behavior: smooth; }
+    body {
+      font-family: var(--f-body);
+      background: var(--ink);
+      color: var(--white);
+      overflow-x: hidden;
+      cursor: none;
+    }
+    img { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; cursor: none; }
+
+    /* ── CUSTOM CURSOR ── */
+    #cursor {
+      position: fixed; top: 0; left: 0;
+      width: 10px; height: 10px;
+      background: var(--signal);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%,-50%);
+      transition: width .15s, height .15s, opacity .15s, border-radius .15s;
+    }
+    #cursor-ring {
+      position: fixed; top: 0; left: 0;
+      width: 38px; height: 38px;
+      border: 1.5px solid var(--signal);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%,-50%);
+      opacity: .4;
+      transition: width .28s cubic-bezier(.16,1,.3,1), height .28s cubic-bezier(.16,1,.3,1), opacity .2s;
+    }
+    body.cursor-hover #cursor { width: 48px; height: 48px; opacity: .12; }
+    body.cursor-hover #cursor-ring { width: 64px; height: 64px; opacity: .7; border-color: var(--gold); }
+    body.cursor-link  #cursor { width: 32px; height: 32px; border-radius: 4px; background: var(--white); }
+    body.cursor-link  #cursor-ring { opacity: 0; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 600;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 24px 5%;
+      opacity: 0;
+      transition: background .4s, backdrop-filter .4s, opacity .5s;
+    }
+    nav.scrolled {
+      background: rgba(11,15,26,.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: var(--f-head); font-size: 1.05rem; font-weight: 800;
+      letter-spacing: .04em; text-transform: uppercase;
+    }
+    .nav-logo span { color: var(--signal); }
+    .nav-cta {
+      font-family: var(--f-head); font-size: .76rem; font-weight: 700;
+      color: var(--signal); background: transparent;
+      border: 1.5px solid var(--signal);
+      padding: 9px 20px; border-radius: 2px;
+      letter-spacing: .05em; text-transform: uppercase;
+      transition: background .2s, color .2s;
+      display: inline-block;
+    }
+    .nav-cta:hover { background: var(--signal); color: var(--ink); }
+
+    /* ── PRE-LOADER (Option A) ── */
+    #preloader {
+      position: fixed; inset: 0; z-index: 800; background: #0D1525;
+      display: flex; align-items: center; justify-content: center; flex-direction: column;
+    }
+    .chat-chrome {
+      width: min(620px, 90vw); background: #141E30; border-radius: 12px 12px 0 0;
+      border: 1px solid rgba(255,255,255,.08); border-bottom: none;
+      padding: 14px 20px; display: flex; align-items: center; gap: 10px;
+    }
+    .chrome-dots { display: flex; gap: 6px; }
+    .chrome-dot { width: 12px; height: 12px; border-radius: 50%; }
+    .chrome-dot:nth-child(1) { background: #FF5F57; }
+    .chrome-dot:nth-child(2) { background: #FEBC2E; }
+    .chrome-dot:nth-child(3) { background: #28C840; }
+    .chrome-title { flex: 1; text-align: center; font-family: var(--f-body); font-size: .78rem; font-weight: 500; color: rgba(255,255,255,.35); }
+    .chat-window {
+      width: min(620px, 90vw); background: #0F1928;
+      border: 1px solid rgba(255,255,255,.08); border-radius: 0 0 12px 12px;
+      padding: 32px 28px 28px; min-height: 240px;
+      display: flex; flex-direction: column; gap: 20px;
+      box-shadow: 0 40px 100px rgba(0,0,0,.7), 0 0 60px rgba(0,229,255,.06);
+    }
+    .msg-user {
+      align-self: flex-end; background: #1E3A5F; border-radius: 18px 18px 4px 18px;
+      padding: 12px 18px; font-family: var(--f-body); font-size: .95rem;
+      color: var(--white); max-width: 80%; opacity: 0;
+      display: flex; align-items: center; gap: 2px;
+    }
+    .msg-ai {
+      align-self: flex-start; display: flex; gap: 12px; align-items: flex-start;
+      opacity: 0; max-width: 90%;
+    }
+    .ai-avatar {
+      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, #00E5FF 0%, #0060A0 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .65rem; font-weight: 800; color: #0B0F1A; font-family: var(--f-head);
+    }
+    .ai-bubble {
+      background: #182840; border-radius: 4px 18px 18px 18px;
+      padding: 14px 18px; font-family: var(--f-body); font-size: .92rem;
+      color: var(--muted); line-height: 1.65;
+      display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px;
+    }
+    .ai-name-highlight { color: var(--signal); font-weight: 600; background: rgba(0,229,255,.1); padding: 1px 6px; border-radius: 4px; }
+    .ai-stars { color: #FFB830; font-size: .82rem; }
+    .type-cursor {
+      display: inline-block; width: 2px; height: 1em;
+      background: var(--signal); vertical-align: text-bottom; margin-left: 1px;
+      animation: blink .7s step-end infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+    .thinking-dots { display: none; align-items: center; gap: 5px; padding: 6px 0; }
+    .thinking-dots span {
+      width: 7px; height: 7px; border-radius: 50%; background: var(--signal); opacity: .3;
+      animation: dot-pulse 1.2s ease-in-out infinite;
+    }
+    .thinking-dots span:nth-child(2) { animation-delay: .2s; }
+    .thinking-dots span:nth-child(3) { animation-delay: .4s; }
+    @keyframes dot-pulse { 0%,100%{opacity:.3;transform:scale(1)} 50%{opacity:1;transform:scale(1.3)} }
+    .thinking-dots.visible { display: flex; }
+    #preloader.exit { animation: loader-exit .9s cubic-bezier(.76,0,.24,1) forwards; }
+    @keyframes loader-exit { 0%{transform:translateY(0)} 100%{transform:translateY(-100vh)} }
+    .skip-btn {
+      margin-top: 28px; font-family: var(--f-body); font-size: .7rem; font-weight: 500;
+      color: rgba(255,255,255,.28); letter-spacing: .1em; text-transform: uppercase;
+      background: none; border: none; cursor: pointer; transition: color .2s;
+    }
+    .skip-btn:hover { color: rgba(255,255,255,.65); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative; height: 100vh; min-height: 700px;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 0 5% 90px; overflow: hidden;
+    }
+    /* Particle canvas (Option B) fills the hero */
+    #particle-canvas {
+      position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%;
+    }
+    /* Vignette keeps bottom text legible over the particle field */
+    .hero-vignette {
+      position: absolute; inset: 0; z-index: 1; pointer-events: none;
+      background: linear-gradient(175deg,
+        rgba(11,15,26,0) 0%,
+        rgba(11,15,26,.15) 40%,
+        rgba(11,15,26,.75) 72%,
+        rgba(11,15,26,.96) 90%,
+        rgba(11,15,26,1) 100%
+      );
+    }
+    .hero-noise {
+      position: absolute; inset: 0; z-index: 2; pointer-events: none; opacity: .035;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+    /* Pulsing signal dot top-right */
+    .hero-signal-pulse {
+      position: absolute; top: 120px; right: 7%; z-index: 3;
+      width: 10px; height: 10px; background: var(--signal); border-radius: 50%;
+    }
+    .hero-signal-pulse::before,
+    .hero-signal-pulse::after {
+      content: ''; position: absolute; inset: 0;
+      border-radius: 50%; border: 1.5px solid var(--signal);
+      animation: pulse-ring 2.4s ease-out infinite;
+    }
+    .hero-signal-pulse::after { animation-delay: 1.2s; }
+    @keyframes pulse-ring {
+      0% { transform: scale(1); opacity: .8; }
+      100% { transform: scale(6); opacity: 0; }
+    }
+    .hero-eyebrow {
+      position: relative; z-index: 4;
+      font-family: var(--f-body); font-size: .72rem; font-weight: 600;
+      letter-spacing: .22em; text-transform: uppercase;
+      color: var(--signal); margin-bottom: 24px;
+      display: flex; align-items: center; gap: 12px; opacity: 0;
+    }
+    .hero-eyebrow::before { content:''; width: 36px; height: 1px; background: var(--signal); }
+    .hero-h1 {
+      position: relative; z-index: 4; font-family: var(--f-head);
+      font-size: clamp(2.6rem, 4.6vw, 6.8rem);
+      font-weight: 800; line-height: .92; letter-spacing: -.03em;
+      word-break: keep-all; overflow-wrap: normal; hyphens: none;
+    }
+    .hero-h1 .line { overflow: hidden; display: block; }
+    .hero-h1 em { color: var(--signal); font-style: normal; }
+    @keyframes ticker-scroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    @keyframes ticker-scroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+    @keyframes tw-blink { 0%,100%{opacity:1} 50%{opacity:0} }
+    .hero-split-row {
+      position: relative; z-index: 2;
+      display: flex; justify-content: space-between; align-items: flex-end;
+      margin-top: 48px; gap: 40px;
+      opacity: 0;
+    }
+    .hero-sub {
+      font-size: 1.05rem; color: var(--muted); line-height: 1.75;
+      max-width: 460px; font-weight: 300;
+    }
+    .hero-sub strong { color: var(--white); font-weight: 500; }
+    .hero-cta-group { display: flex; gap: 16px; align-items: center; flex-shrink: 0; }
+    .btn-primary {
+      font-family: var(--f-head); font-size: .9rem; font-weight: 700;
+      color: var(--ink); background: var(--signal);
+      padding: 16px 38px; border-radius: 2px;
+      letter-spacing: .04em; text-transform: uppercase;
+      transition: background .2s, transform .15s;
+      display: inline-block; position: relative; overflow: hidden;
+    }
+    .btn-primary::after {
+      content: ''; position: absolute; inset: 0;
+      background: var(--gold); transform: translateX(-101%);
+      transition: transform .35s cubic-bezier(.16,1,.3,1);
+    }
+    .btn-primary:hover::after { transform: translateX(0); }
+    .btn-primary span { position: relative; z-index: 1; }
+    .btn-ghost {
+      font-family: var(--f-body); font-size: .85rem; font-weight: 500;
+      color: var(--muted); border: 1px solid var(--border);
+      padding: 15px 28px; border-radius: 2px;
+      transition: color .2s, border-color .2s;
+    }
+    .btn-ghost:hover { color: var(--white); border-color: rgba(255,255,255,.3); }
+
+    /* ── AI PLATFORM MARQUEE ── */
+    .marquee-strip {
+      background: rgba(0,229,255,.06);
+      border-top: 1px solid rgba(0,229,255,.15);
+      border-bottom: 1px solid rgba(0,229,255,.15);
+      padding: 18px 0; overflow: hidden;
+    }
+    .marquee-inner {
+      display: flex; gap: 0;
+      animation: marquee-scroll 22s linear infinite;
+      width: max-content;
+    }
+    .marquee-inner:hover { animation-play-state: paused; }
+    @keyframes marquee-scroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+    .marquee-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 0 52px;
+      font-family: var(--f-head); font-size: .75rem; font-weight: 700;
+      letter-spacing: .14em; text-transform: uppercase;
+      color: rgba(0,229,255,.6); white-space: nowrap;
+    }
+    .marquee-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--signal); opacity: .4;
+    }
+
+    /* ── SECTION BASE ── */
+    section { position: relative; }
+    .section-label {
+      font-family: var(--f-body); font-size: .7rem; font-weight: 600;
+      letter-spacing: .22em; text-transform: uppercase;
+      color: var(--signal); margin-bottom: 20px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .section-label::before { content:''; width: 24px; height: 1px; background: var(--signal); }
+
+    /* ── PROBLEM STATEMENT ── */
+    .problem {
+      padding: 72px 5% 68px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+    }
+    .problem-text {}
+    .problem-h2 {
+      font-family: var(--f-head);
+      font-size: clamp(2.4rem, 4.5vw, 5rem);
+      font-weight: 800; line-height: .95;
+      letter-spacing: -.03em; margin-bottom: 32px;
+    }
+    .problem-h2 em { color: var(--signal); font-style: normal; }
+    .problem-body {
+      font-size: 1.05rem; color: var(--muted); line-height: 1.8;
+      font-weight: 300; max-width: 480px;
+    }
+    .problem-body strong { color: var(--white); font-weight: 500; }
+    .problem-visual {
+      position: relative;
+    }
+    /* The glowing AI chat screenshot */
+    .chat-frame {
+      border-radius: 12px; overflow: hidden;
+      border: 1px solid rgba(0,229,255,.2);
+      box-shadow: 0 0 80px rgba(0,229,255,.12), 0 40px 80px rgba(0,0,0,.6);
+      position: relative;
+    }
+    .chat-frame img { width: 100%; display: block; }
+    .chat-frame-glow {
+      position: absolute; inset: -1px;
+      border-radius: 12px;
+      background: transparent;
+      box-shadow: 0 0 0 1px rgba(0,229,255,.3);
+      pointer-events: none;
+    }
+    /* Floating badge */
+    .chat-badge {
+      position: absolute; bottom: -20px; left: -20px;
+      background: var(--gold); color: var(--ink);
+      font-family: var(--f-head); font-size: .72rem; font-weight: 800;
+      letter-spacing: .06em; text-transform: uppercase;
+      padding: 12px 20px; border-radius: 4px;
+      box-shadow: 0 8px 32px rgba(255,184,48,.3);
+    }
+
+    /* ── INVISIBLE DIVIDER ── */
+    .wave-divider { overflow: hidden; line-height: 0; }
+    .wave-divider svg { display: block; }
+
+    /* ── HOW IT WORKS -- 3D DEPTH REVEAL PANELS ── */
+    .how {
+      padding: 68px 5% 72px;
+      background: var(--ink-soft);
+    }
+    .how-header {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      margin-bottom: 80px;
+    }
+    .how-h2 {
+      font-family: var(--f-head);
+      font-size: clamp(2rem, 3.5vw, 4rem);
+      font-weight: 800; line-height: .95;
+      letter-spacing: -.03em;
+    }
+    .how-sub {
+      font-size: .95rem; color: var(--muted); max-width: 320px;
+      line-height: 1.7; text-align: right;
+    }
+    /* 3D depth panels */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      perspective: 1200px;
+    }
+    .step-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 52px 40px;
+      /* Visible by default -- GSAP animates from rotated state */
+      opacity: 1;
+      transition: transform .6s cubic-bezier(.16,1,.3,1), box-shadow .4s;
+      cursor: default;
+    }
+    .step-panel:hover {
+      transform: rotateY(0deg) rotateX(0deg) translateZ(0px);
+      box-shadow: 0 40px 80px rgba(0,0,0,.5), 0 0 0 1px rgba(0,229,255,.2);
+      z-index: 2;
+    }
+    .step-num {
+      font-family: var(--f-head); font-size: 4rem; font-weight: 800;
+      color: var(--signal); opacity: .18; line-height: 1;
+      margin-bottom: 24px; letter-spacing: -.04em;
+    }
+    .step-title {
+      font-family: var(--f-head); font-size: 1.3rem; font-weight: 700;
+      margin-bottom: 16px; letter-spacing: -.01em;
+    }
+    .step-body {
+      font-size: .9rem; color: var(--muted); line-height: 1.7; font-weight: 300;
+    }
+    .step-body strong { color: var(--signal); font-weight: 500; }
+
+    /* ── DEMO SECTION ── */
+    .demos {
+      padding: 68px 5% 72px;
+    }
+    .demos-header { margin-bottom: 80px; }
+    .demos-h2 {
+      font-family: var(--f-head);
+      font-size: clamp(2rem, 3.5vw, 4rem);
+      font-weight: 800; line-height: .95;
+      letter-spacing: -.03em; margin-bottom: 16px;
+    }
+    .demos-sub { font-size: 1rem; color: var(--muted); font-weight: 300; }
+    /* Demo cards -- asymmetric editorial grid */
+    .demos-grid {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 16px;
+    }
+    .demo-card {
+      background: var(--ink-soft);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+      position: relative;
+      transition: border-color .3s, transform .3s;
+    }
+    .demo-card:hover {
+      border-color: rgba(0,229,255,.35);
+      transform: translateY(-4px);
+    }
+    .demo-card.large { grid-row: span 2; }
+    .demo-card-img {
+      width: 100%; aspect-ratio: 16/9; object-fit: cover;
+      filter: brightness(.7) saturate(1.1);
+      transition: filter .4s;
+    }
+    .demo-card.large .demo-card-img { aspect-ratio: unset; height: 260px; }
+    .demo-card:hover .demo-card-img { filter: brightness(.85) saturate(1.3); }
+    .demo-card-body { padding: 28px 28px 32px; }
+    .demo-card-niche {
+      font-family: var(--f-body); font-size: .68rem; font-weight: 600;
+      letter-spacing: .2em; text-transform: uppercase;
+      color: var(--signal); margin-bottom: 10px;
+    }
+    .demo-card-title {
+      font-family: var(--f-head); font-size: 1.2rem; font-weight: 700;
+      margin-bottom: 10px; letter-spacing: -.01em;
+    }
+    .demo-card-desc {
+      font-size: .85rem; color: var(--muted); line-height: 1.65; font-weight: 300;
+    }
+    .demo-card-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-top: 20px;
+      font-family: var(--f-head); font-size: .78rem; font-weight: 700;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: var(--signal);
+      transition: gap .2s;
+    }
+    .demo-card-link:hover { gap: 14px; }
+    .demo-card-link::after { content: '→'; }
+
+    /* ── STATS ── */
+    .stats {
+      padding: 60px 5%;
+      background: var(--ink-soft);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+    }
+    .stat-item {
+      padding: 48px 40px;
+      border-right: 1px solid var(--border);
+      opacity: 1;
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-num {
+      font-family: var(--f-head);
+      font-size: clamp(2.8rem, 4vw, 4.5rem);
+      font-weight: 800; line-height: 1;
+      letter-spacing: -.04em;
+      color: var(--signal);
+      margin-bottom: 12px;
+    }
+    .stat-label {
+      font-size: .88rem; color: var(--muted); line-height: 1.6;
+      font-weight: 300;
+    }
+    .stat-label strong { color: var(--white); display: block; font-weight: 500; font-size: .95rem; margin-bottom: 4px; }
+
+    /* ── BEFORE / AFTER ── */
+    .before-after {
+      padding: 68px 5%;
+    }
+    .ba-header { margin-bottom: 80px; }
+    .ba-h2 {
+      font-family: var(--f-head);
+      font-size: clamp(2rem, 3.5vw, 4rem);
+      font-weight: 800; line-height: .95;
+      letter-spacing: -.03em;
+    }
+    .ba-split {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      border: 1px solid var(--border);
+    }
+    .ba-col {
+      padding: 64px 52px;
+    }
+    .ba-col.after { background: rgba(0,229,255,.04); }
+    .ba-col-label {
+      font-family: var(--f-head); font-size: .7rem; font-weight: 800;
+      letter-spacing: .2em; text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+    .ba-col.before .ba-col-label { color: rgba(240,238,232,.3); }
+    .ba-col.after .ba-col-label { color: var(--signal); }
+    .ba-scenario {
+      margin-bottom: 28px;
+    }
+    .ba-q {
+      font-family: var(--f-body); font-size: .8rem; font-weight: 500;
+      letter-spacing: .04em;
+      color: var(--muted); margin-bottom: 10px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .ba-q::before { content: '"'; font-size: 1.2rem; }
+    .ba-q::after  { content: '"'; font-size: 1.2rem; }
+    .ba-result {
+      font-family: var(--f-head); font-size: 1rem; font-weight: 700;
+      padding: 12px 16px; border-radius: 2px;
+    }
+    .ba-col.before .ba-result {
+      background: rgba(255,255,255,.04);
+      color: rgba(240,238,232,.3);
+      text-decoration: line-through;
+    }
+    .ba-col.after .ba-result {
+      background: rgba(0,229,255,.1);
+      color: var(--signal);
+      border: 1px solid rgba(0,229,255,.25);
+    }
+
+    /* ── FAQ ── */
+    .faq {
+      padding: 72px 5%;
+      background: var(--ink-soft);
+    }
+    .faq-inner {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 60px;
+      align-items: start;
+    }
+    .faq-h2 {
+      font-family: var(--f-head);
+      font-size: clamp(1.8rem, 2.8vw, 3.2rem);
+      font-weight: 800; letter-spacing: -.03em;
+      line-height: .95; word-break: keep-all;
+      position: sticky; top: 100px;
+    }
+    .faq-list { width: 100%; }
+    .faq-item:first-child { border-top: 1px solid var(--border); }
+    @media (max-width: 768px) {
+      .faq-inner { grid-template-columns: 1fr; gap: 32px; }
+      .faq-h2 { position: static; }
+    }
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+    }
+    .faq-q {
+      width: 100%; text-align: left;
+      background: none; border: none; color: var(--white);
+      font-family: var(--f-head); font-size: 1.05rem; font-weight: 600;
+      padding: 28px 0; cursor: none;
+      display: flex; justify-content: space-between; align-items: center;
+      letter-spacing: -.01em;
+      transition: color .2s;
+    }
+    .faq-q:hover { color: var(--signal); }
+    .faq-icon {
+      width: 28px; height: 28px; border: 1px solid var(--border);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: .9rem; flex-shrink: 0; margin-left: 24px;
+      transition: transform .3s, background .2s, border-color .2s;
+    }
+    .faq-item.open .faq-icon { transform: rotate(45deg); background: var(--signal); border-color: var(--signal); color: var(--ink); }
+    .faq-a {
+      font-size: .95rem; color: var(--muted); line-height: 1.8;
+      font-weight: 300; max-height: 0; overflow: hidden;
+      transition: max-height .45s cubic-bezier(.16,1,.3,1), padding .3s;
+    }
+    .faq-a.open { max-height: 400px; padding-bottom: 28px; }
+
+    /* ── CTA SECTION ── */
+    .cta-section {
+      padding: 80px 5%;
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .cta-bg-glow {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(0,229,255,.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .cta-eyebrow {
+      font-family: var(--f-body); font-size: .72rem; font-weight: 600;
+      letter-spacing: .22em; text-transform: uppercase;
+      color: var(--signal); margin-bottom: 28px;
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+    }
+    .cta-eyebrow::before,
+    .cta-eyebrow::after { content:''; width: 36px; height: 1px; background: var(--signal); }
+    .cta-h2 {
+      font-family: var(--f-head);
+      font-size: clamp(2.8rem, 6vw, 7rem);
+      font-weight: 800; line-height: .92;
+      letter-spacing: -.04em; margin-bottom: 32px;
+      position: relative; z-index: 1;
+    }
+    .cta-h2 em { color: var(--signal); font-style: normal; }
+    .cta-sub {
+      font-size: 1.1rem; color: var(--muted); font-weight: 300;
+      max-width: 520px; margin: 0 auto 52px; line-height: 1.75;
+      position: relative; z-index: 1;
+    }
+    .cta-buttons {
+      display: flex; gap: 20px; justify-content: center;
+      position: relative; z-index: 1;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 60px 5%;
+      border-top: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .footer-brand {
+      font-family: var(--f-head); font-size: .9rem; font-weight: 800;
+      letter-spacing: .04em; text-transform: uppercase;
+    }
+    .footer-brand span { color: var(--signal); }
+    .footer-copy {
+      font-size: .78rem; color: var(--muted); font-weight: 300;
+    }
+    .footer-link {
+      font-size: .78rem; color: var(--muted);
+      font-weight: 300; transition: color .2s;
+    }
+    .footer-link:hover { color: var(--signal); }
+
+    /* ── WAVY DIVIDERS ── */
+    .wave-top, .wave-bottom { display: block; width: 100%; overflow: hidden; line-height: 0; }
+
+    /* ── SCROLL REVEAL BASE ──
+       Default is VISIBLE. GSAP overrides to 0 then animates in.
+       This ensures content shows even if GSAP fails to load.    */
+    .reveal { opacity: 1; transform: translateY(0); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) {
+      .problem { grid-template-columns: 1fr; gap: 60px; }
+      .demos-grid { grid-template-columns: 1fr 1fr; }
+      .demo-card.large { grid-row: unset; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .stat-item { border-right: none; border-bottom: 1px solid var(--border); }
+      .stat-item:nth-child(3), .stat-item:nth-child(4) { border-bottom: none; }
+      .ba-split { grid-template-columns: 1fr; }
+      .how-header { flex-direction: column; gap: 20px; }
+      .how-sub { text-align: left; }
+      .steps-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .hero { padding: 0 5% 60px; }
+      .hero-split-row { flex-direction: column; align-items: flex-start; gap: 28px; }
+      .hero-cta-group { flex-direction: column; width: 100%; }
+      .btn-primary, .btn-ghost { width: 100%; text-align: center; }
+      .demos-grid { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: 1fr; }
+      .stat-item:nth-child(3) { border-bottom: 1px solid var(--border); }
+      .ba-col { padding: 40px 28px; }
+      .cta-buttons { flex-direction: column; align-items: center; }
+      footer { flex-direction: column; gap: 16px; text-align: center; }
+      nav { padding: 20px 5%; }
+    }
+
+    /* Schema hidden */
+    script[type="application/ld+json"] { display: none; }
+  </style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- ── PRE-LOADER ── -->
+<div id="preloader">
+  <div class="chat-chrome">
+    <div class="chrome-dots">
+      <div class="chrome-dot"></div>
+      <div class="chrome-dot"></div>
+      <div class="chrome-dot"></div>
+    </div>
+    <div class="chrome-title">ChatGPT</div>
+  </div>
+  <div class="chat-window">
+    <div class="msg-user" id="msg-user">
+      <span id="user-text"></span>
+      <span class="type-cursor" id="user-tcursor"></span>
+    </div>
+    <div class="msg-ai" id="msg-thinking">
+      <div class="ai-avatar">AI</div>
+      <div class="ai-bubble">
+        <div class="thinking-dots" id="thinking-dots">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+    <div class="msg-ai" id="msg-ai">
+      <div class="ai-avatar">AI</div>
+      <div class="ai-bubble">
+        <span class="ai-prefix">Based on reviews and local reputation, </span>
+        <span class="ai-name-highlight" id="ai-name"></span>
+        <span id="ai-suffix"></span>
+        <span class="ai-stars" id="ai-stars"></span>
+        <span class="type-cursor" id="ai-tcursor"></span>
+      </div>
+    </div>
+  </div>
+  <button class="skip-btn" id="skip-btn">Skip intro</button>
+</div>
+
+<!-- ── NAV ── -->
+<nav id="main-nav">
+  <div class="nav-logo">Signal<span>.</span>Works</div>
+  <a href="#capture" class="nav-cta">Get a Demo</a>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero" id="hero">
+  <canvas id="particle-canvas"></canvas>
+  <div class="hero-vignette"></div>
+  <div class="hero-noise"></div>
+
+  <!-- AI platform ticker -->
+  <div style="position:absolute;top:68px;left:0;right:0;z-index:4;overflow:hidden;border-bottom:1px solid rgba(0,229,255,.12);padding:8px 0;background:rgba(0,229,255,.04);">
+    <div style="display:flex;width:max-content;animation:ticker-scroll 22s linear infinite;">
+      <div style="display:flex;align-items:center;gap:8px;padding:0 32px;font-family:'Syne',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(0,229,255,.55);white-space:nowrap;"><div style="width:4px;height:4px;border-radius:50%;background:#00E5FF;opacity:.5;"></div>ChatGPT</div>
+      <div style="display:flex;align-items:center;gap:8px;padding:0 32px;font-family:'Syne',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(0,229,255,.55);white-space:nowrap;"><div style="width:4px;height:4px;border-radius:50%;background:#00E5FF;opacity:.5;"></div>Perplexity</div>
+      <div style="display:flex;align-items:center;gap:8px;padding:0 32px;font-family:'Syne',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(0,229,255,.55);white-space:nowrap;"><div style="width:4px;height:4px;border-radius:50%;background:#00E5FF;opacity:.5;"></div>Google AI</div>
+      <div style="display:flex;align-items:center;gap:8px;padding:0 32px;font-family:'Syne',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(0,229,255,.55);white-space:nowrap;"><div style="width:4px;height:4px;border-radius:50%;background:#00E5FF;opacity:.5;"></div>Apple Siri</div>
+      <div style="display:flex;align-items:center;gap:8px;padding:0 32px;font-family:'Syne',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(0,229,255,.55);white-space:nowrap;"><div style="width:4px;height:4px;border-radius:50%;background:#00E5FF;opacity:.5;"></div>Microsoft Copilot</div>
+      <div style="display:flex;align-items:center;gap:8px;padding:0 32px;font-family:'Syne',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(0,229,255,.55);white-space:nowrap;"><div style="width:4px;height:4px;border-radius:50%;background:#00E5FF;opacity:.5;"></div>Meta AI</div>
+      <div style="display:flex;align-items:center;gap:8px;padding:0 32px;font-family:'Syne',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(0,229,255,.55);white-space:nowrap;"><div style="width:4px;height:4px;border-radius:50%;background:#00E5FF;opacity:.5;"></div>Claude</div>
+      <div style="display:flex;align-items:center;gap:8px;padding:0 32px;font-family:'Syne',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(0,229,255,.55);white-space:nowrap;"><div style="width:4px;height:4px;border-radius:50%;background:#00E5FF;opacity:.5;"></div>Gemini</div>
+      <!-- duplicate for seamless loop -->
+      <div style="display:flex;align-items:center;gap:8px;padding:0 32px;font-family:'Syne',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(0,229,255,.55);white-space:nowrap;"><div style="width:4px;height:4px;border-radius:50%;background:#00E5FF;opacity:.5;"></div>ChatGPT</div>
+      <div style="display:flex;align-items:center;gap:8px;padding:0 32px;font-family:'Syne',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(0,229,255,.55);white-space:nowrap;"><div style="width:4px;height:4px;border-radius:50%;background:#00E5FF;opacity:.5;"></div>Perplexity</div>
+      <div style="display:flex;align-items:center;gap:8px;padding:0 32px;font-family:'Syne',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(0,229,255,.55);white-space:nowrap;"><div style="width:4px;height:4px;border-radius:50%;background:#00E5FF;opacity:.5;"></div>Google AI</div>
+      <div style="display:flex;align-items:center;gap:8px;padding:0 32px;font-family:'Syne',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(0,229,255,.55);white-space:nowrap;"><div style="width:4px;height:4px;border-radius:50%;background:#00E5FF;opacity:.5;"></div>Apple Siri</div>
+      <div style="display:flex;align-items:center;gap:8px;padding:0 32px;font-family:'Syne',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(0,229,255,.55);white-space:nowrap;"><div style="width:4px;height:4px;border-radius:50%;background:#00E5FF;opacity:.5;"></div>Microsoft Copilot</div>
+      <div style="display:flex;align-items:center;gap:8px;padding:0 32px;font-family:'Syne',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(0,229,255,.55);white-space:nowrap;"><div style="width:4px;height:4px;border-radius:50%;background:#00E5FF;opacity:.5;"></div>Meta AI</div>
+      <div style="display:flex;align-items:center;gap:8px;padding:0 32px;font-family:'Syne',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(0,229,255,.55);white-space:nowrap;"><div style="width:4px;height:4px;border-radius:50%;background:#00E5FF;opacity:.5;"></div>Claude</div>
+      <div style="display:flex;align-items:center;gap:8px;padding:0 32px;font-family:'Syne',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(0,229,255,.55);white-space:nowrap;"><div style="width:4px;height:4px;border-radius:50%;background:#00E5FF;opacity:.5;"></div>Gemini</div>
+    </div>
+  </div>
+
+  <p class="hero-eyebrow" id="hero-eyebrow">AI Presence for Local Business</p>
+
+  <h1 class="hero-h1" id="hero-h1">
+    <span class="line">Your business.</span>
+    <span class="line">In every <em>AI answer.</em></span>
+  </h1>
+
+  <div class="hero-split-row" id="hero-split">
+    <p class="hero-sub">
+      Open ChatGPT right now. Type: <strong>"who is the best roofer in [your city]."</strong>
+      If your name is not in the answer, your competitor just got that call.
+      Signal Works puts you there. In two weeks.
+    </p>
+    <div class="hero-cta-group">
+      <a href="#capture" class="btn-primary magnetic-btn">
+        <span>Get My Free Demo</span>
+      </a>
+      <a href="#how" class="btn-ghost magnetic-btn">How It Works</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── AI PLATFORM MARQUEE ── -->
+<div class="marquee-strip">
+  <div class="marquee-inner">
+    <!-- duplicated for seamless loop -->
+    <div class="marquee-item"><div class="marquee-dot"></div>ChatGPT</div>
+    <div class="marquee-item"><div class="marquee-dot"></div>Perplexity</div>
+    <div class="marquee-item"><div class="marquee-dot"></div>Google AI</div>
+    <div class="marquee-item"><div class="marquee-dot"></div>Apple Siri</div>
+    <div class="marquee-item"><div class="marquee-dot"></div>Microsoft Copilot</div>
+    <div class="marquee-item"><div class="marquee-dot"></div>Meta AI</div>
+    <div class="marquee-item"><div class="marquee-dot"></div>Claude</div>
+    <div class="marquee-item"><div class="marquee-dot"></div>Gemini</div>
+    <div class="marquee-item"><div class="marquee-dot"></div>ChatGPT</div>
+    <div class="marquee-item"><div class="marquee-dot"></div>Perplexity</div>
+    <div class="marquee-item"><div class="marquee-dot"></div>Google AI</div>
+    <div class="marquee-item"><div class="marquee-dot"></div>Apple Siri</div>
+    <div class="marquee-item"><div class="marquee-dot"></div>Microsoft Copilot</div>
+    <div class="marquee-item"><div class="marquee-dot"></div>Meta AI</div>
+    <div class="marquee-item"><div class="marquee-dot"></div>Claude</div>
+    <div class="marquee-item"><div class="marquee-dot"></div>Gemini</div>
+  </div>
+</div>
+
+<!-- ── TYPEWRITER STRIP -- 2 lines, no wrapping ── -->
+<div style="padding:44px 5%;background:#0F1422;border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08);">
+  <p style="font-family:'Inter',sans-serif;font-size:.6rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:rgba(242,240,234,.6);margin-bottom:10px;">Right now someone is asking:</p>
+  <div style="font-family:'Syne',sans-serif;font-weight:800;letter-spacing:-.02em;line-height:1.15;">
+    <div style="font-size:clamp(1.5rem,3vw,3rem);color:#F2F0EA;">"Who is the best</div>
+    <div style="font-size:clamp(1.5rem,3vw,3rem);display:flex;align-items:center;overflow:hidden;">
+      <span id="tw-word" style="color:#00E5FF;white-space:nowrap;display:inline-block;min-width:180px;">roofer</span><span style="color:#F2F0EA;white-space:nowrap;">&nbsp;near me?"</span>
+      <span style="display:inline-block;width:3px;height:.85em;background:#00E5FF;margin-left:3px;flex-shrink:0;animation:tw-blink .7s step-end infinite;"></span>
+    </div>
+  </div>
+</div>
+
+<!-- ── PROBLEM STATEMENT ── -->
+<section class="problem">
+  <div class="problem-text">
+    <p class="section-label reveal">The Shift No One Told You About</p>
+    <h2 class="problem-h2 reveal">
+      Your customers<br/>are asking AI<br/><em>right now.</em>
+    </h2>
+    <p class="problem-body reveal">
+      Customers still search. But more of them are typing into ChatGPT
+      instead of Google. They ask <strong>"who is the best roofer near me"</strong>
+      and get a direct answer. Not a list of ten links.
+      <br/><br/>
+      If your business is not in that answer, you do not exist at that moment.
+      That moment is when they are ready to call.
+    </p>
+  </div>
+  <div class="problem-visual reveal">
+    <div class="chat-frame">
+      <img src="img/ai-chat-mockup.png" alt="ChatGPT recommending a local HVAC company when asked who is the best near me"/>
+      <div class="chat-frame-glow"></div>
+    </div>
+    <div class="chat-badge">This could be you</div>
+  </div>
+</section>
+
+<!-- Wave divider -->
+<div class="wave-top">
+  <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="height:60px">
+    <path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="#141927"/>
+  </svg>
+</div>
+
+<!-- ── HOW IT WORKS ── -->
+<section class="how" id="how">
+  <div class="how-header">
+    <div>
+      <p class="section-label">The Process</p>
+      <h2 class="how-h2">Built in 2 weeks.<br/>Visible for years.</h2>
+    </div>
+    <p class="how-sub">
+      No complicated tech. No ongoing subscriptions.
+      We build it once. You own it.
+    </p>
+  </div>
+
+  <div class="steps-grid">
+    <div class="step-panel" id="step-1">
+      <div class="step-num">01</div>
+      <h3 class="step-title">We audit your current visibility</h3>
+      <p class="step-body">
+        We run your business name and category across <strong>every major AI platform</strong>.
+        ChatGPT, Perplexity, Google AI, Siri. You see exactly where you appear
+        and where you are invisible right now.
+      </p>
+    </div>
+    <div class="step-panel" id="step-2">
+      <div class="step-num">02</div>
+      <h3 class="step-title">We build your AI-readable presence</h3>
+      <p class="step-body">
+        A fast, structured website optimized for how AI models read and index content.
+        Not keyword stuffing. Not black-hat tricks. <strong>The architecture AI trusts.</strong>
+      </p>
+    </div>
+    <div class="step-panel" id="step-3">
+      <div class="step-num">03</div>
+      <h3 class="step-title">You start showing up in answers</h3>
+      <p class="step-body">
+        Within 30 days, your business appears when customers ask AI who to call
+        in your category and city. <strong>That is new inquiries you did not have before.</strong>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Wave divider -->
+<div class="wave-bottom">
+  <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="height:60px; background:#141927;">
+    <path d="M0,30 C360,0 1080,60 1440,30 L1440,0 L0,0 Z" fill="#0B0F1A"/>
+  </svg>
+</div>
+
+<!-- First demos section removed -- video reel section below is the canonical demos section -->
+
+<!-- ── BEFORE / AFTER (moved above stats per Sankofa verdict) ── -->
+<section class="before-after">
+  <div class="ba-header">
+    <p class="section-label reveal">The Difference Is Real</p>
+    <h2 class="ba-h2 reveal">What customers see<br/>when they ask AI.</h2>
+  </div>
+
+  <div class="ba-split reveal">
+    <div class="ba-col before">
+      <p class="ba-col-label">Without Signal Works</p>
+      <div class="ba-scenario">
+        <p class="ba-q">Who is the best roofer in Sandy, Utah?</p>
+        <div class="ba-result">Your business is not in the answer.</div>
+      </div>
+      <div class="ba-scenario">
+        <p class="ba-q">Best pediatric dentist near me Provo</p>
+        <div class="ba-result">AI has no record of your practice.</div>
+      </div>
+      <div class="ba-scenario">
+        <p class="ba-q">Emergency HVAC repair Salt Lake City</p>
+        <div class="ba-result">Your competitor gets the call at 2am.</div>
+      </div>
+    </div>
+    <div class="ba-col after">
+      <p class="ba-col-label">With Signal Works</p>
+      <div class="ba-scenario">
+        <p class="ba-q">Who is the best roofer in Sandy, Utah?</p>
+        <div class="ba-result">Your business. Your name. First answer.</div>
+      </div>
+      <div class="ba-scenario">
+        <p class="ba-q">Best pediatric dentist near me Provo</p>
+        <div class="ba-result">Your practice. Recommended by AI.</div>
+      </div>
+      <div class="ba-scenario">
+        <p class="ba-q">Emergency HVAC repair Salt Lake City</p>
+        <div class="ba-result">You get the call. Every time.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Wave divider -->
+<div class="wave-top">
+  <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="height:60px">
+    <path d="M0,20 C480,60 960,0 1440,40 L1440,60 L0,60 Z" fill="#141927"/>
+  </svg>
+</div>
+
+<!-- ── STATS ── -->
+<section class="stats">
+  <div class="stats-grid">
+    <div class="stat-item">
+      <div class="stat-num" id="stat-1">0%</div>
+      <div class="stat-label">
+        <strong>Of local businesses</strong>
+        are optimized for AI search answers today. That is your window.
+      </div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" id="stat-2">0x</div>
+      <div class="stat-label">
+        <strong>More likely to be called</strong>
+        when your business appears in an AI answer vs. not appearing at all.
+      </div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" id="stat-3">0%</div>
+      <div class="stat-label">
+        <strong>Of consumers</strong>
+        used AI to find local services in the last 6 months. Growing 40% month over month.
+      </div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" id="stat-4">0</div>
+      <div class="stat-label">
+        <strong>Businesses in your city</strong>
+        have done this yet. First mover wins the answer.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── VIDEO REELS ── -->
+<section style="padding:72px 5%;background:#080C16;" id="demos">
+  <p style="font-family:'Inter',sans-serif;font-size:.62rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:#00E5FF;margin-bottom:13px;display:flex;align-items:center;gap:8px;" class="reveal"><span style="display:block;width:16px;height:1px;background:#00E5FF;"></span>Real Builds. Live Now.</p>
+  <h2 style="font-family:'Syne',sans-serif;font-size:clamp(1.8rem,3vw,3.8rem);font-weight:800;line-height:.94;letter-spacing:-.03em;margin-bottom:10px;word-break:keep-all;" class="reveal">See what your presence<br/>could look like.</h2>
+  <p style="font-size:.9rem;color:rgba(242,240,234,.78);font-weight:300;margin-bottom:32px;" class="reveal">Every video is a real Signal Works pitch reel. Every site is live right now.</p>
+  <!-- Horizontal scroll video reel lane -->
+  <div style="display:flex;gap:16px;overflow-x:auto;padding-bottom:12px;scrollbar-width:thin;scrollbar-color:#00E5FF transparent;">
+    <div style="flex-shrink:0;width:420px;border:1px solid rgba(255,255,255,.08);border-radius:2px;overflow:hidden;transition:border-color .3s,transform .3s;" onmouseenter="this.style.borderColor='rgba(0,229,255,.4)';this.style.transform='translateY(-4px)';" onmouseleave="this.style.borderColor='rgba(255,255,255,.08)';this.style.transform='translateY(0)';">
+      <video style="width:100%;aspect-ratio:16/9;object-fit:cover;display:block;" autoplay muted loop playsinline>
+        <source src="img/hero-reel.mp4" type="video/mp4"/>
+      </video>
+      <div style="padding:16px 18px;display:flex;justify-content:space-between;align-items:center;background:#0F1422;">
+        <span style="font-family:'Syne',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#F0A030;">HVAC</span>
+        <a href="https://signal-works-demo-hvac.vercel.app/play.html" target="_blank" style="font-size:.7rem;font-weight:500;color:#00E5FF;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;">See Live &rarr;</a>
+      </div>
+    </div>
+    <div style="flex-shrink:0;width:420px;border:1px solid rgba(255,255,255,.08);border-radius:2px;overflow:hidden;transition:border-color .3s,transform .3s;" onmouseenter="this.style.borderColor='rgba(0,229,255,.4)';this.style.transform='translateY(-4px)';" onmouseleave="this.style.borderColor='rgba(255,255,255,.08)';this.style.transform='translateY(0)';">
+      <video style="width:100%;aspect-ratio:16/9;object-fit:cover;display:block;" autoplay muted loop playsinline>
+        <source src="img/reel-roofing.mp4" type="video/mp4"/>
+      </video>
+      <div style="padding:16px 18px;display:flex;justify-content:space-between;align-items:center;background:#0F1422;">
+        <span style="font-family:'Syne',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#F4600C;">Roofing</span>
+        <a href="https://signal-works-demo-roofing.vercel.app/play.html" target="_blank" style="font-size:.7rem;font-weight:500;color:#00E5FF;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;">See Live &rarr;</a>
+      </div>
+    </div>
+    <div style="flex-shrink:0;width:420px;border:1px solid rgba(255,255,255,.08);border-radius:2px;overflow:hidden;transition:border-color .3s,transform .3s;" onmouseenter="this.style.borderColor='rgba(0,229,255,.4)';this.style.transform='translateY(-4px)';" onmouseleave="this.style.borderColor='rgba(255,255,255,.08)';this.style.transform='translateY(0)';">
+      <video style="width:100%;aspect-ratio:16/9;object-fit:cover;display:block;" autoplay muted loop playsinline>
+        <source src="img/reel-dental.mp4" type="video/mp4"/>
+      </video>
+      <div style="padding:16px 18px;display:flex;justify-content:space-between;align-items:center;background:#0F1422;">
+        <span style="font-family:'Syne',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#5BC8F5;">Dental</span>
+        <a href="https://signal-works-demo-dental.vercel.app/play.html" target="_blank" style="font-size:.7rem;font-weight:500;color:#00E5FF;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;">See Live &rarr;</a>
+      </div>
+    </div>
+    <div style="flex-shrink:0;width:320px;border:1px solid rgba(0,229,255,.2);border-radius:2px;display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:250px;background:#0F1422;border-style:dashed;">
+      <div style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:rgba(0,229,255,.2);margin-bottom:14px;text-align:center;line-height:1.1;">YOUR<br/>NICHE</div>
+      <a href="#capture" style="font-family:'Syne',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#080C16;background:#00E5FF;padding:10px 18px;border-radius:2px;text-decoration:none;">Request Yours</a>
+    </div>
+  </div>
+  <!-- Screenshot grid -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:22px;">
+    <div style="border:1px solid rgba(255,255,255,.08);border-radius:2px;overflow:hidden;position:relative;transition:border-color .3s,transform .3s;" class="reveal" onmouseenter="this.style.borderColor='rgba(0,229,255,.35)';this.style.transform='translateY(-3px)';" onmouseleave="this.style.borderColor='rgba(255,255,255,.08)';this.style.transform='translateY(0)';"><img src="img/demo-roofing.png" alt="Roofing AI presence demo" style="width:100%;display:block;filter:brightness(.8);transition:filter .3s;" onmouseenter="this.style.filter='brightness(1)';" onmouseleave="this.style.filter='brightness(.8)';"/><div style="position:absolute;bottom:0;left:0;right:0;padding:12px 14px;background:linear-gradient(to top,rgba(8,12,22,.95) 0%,transparent 100%);font-family:'Syne',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center;"><span>Roofing</span><a href="https://signal-works-demo-roofing.vercel.app" target="_blank" style="font-size:.62rem;color:#00E5FF;text-decoration:none;">Live site &rarr;</a></div></div>
+    <div style="border:1px solid rgba(255,255,255,.08);border-radius:2px;overflow:hidden;position:relative;transition:border-color .3s,transform .3s;" class="reveal" onmouseenter="this.style.borderColor='rgba(0,229,255,.35)';this.style.transform='translateY(-3px)';" onmouseleave="this.style.borderColor='rgba(255,255,255,.08)';this.style.transform='translateY(0)';"><img src="img/demo-dental.png" alt="Dental AI presence demo" style="width:100%;display:block;filter:brightness(.8);transition:filter .3s;" onmouseenter="this.style.filter='brightness(1)';" onmouseleave="this.style.filter='brightness(.8)';"/><div style="position:absolute;bottom:0;left:0;right:0;padding:12px 14px;background:linear-gradient(to top,rgba(8,12,22,.95) 0%,transparent 100%);font-family:'Syne',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center;"><span>Dental</span><a href="https://signal-works-demo-dental.vercel.app" target="_blank" style="font-size:.62rem;color:#00E5FF;text-decoration:none;">Live site &rarr;</a></div></div>
+    <div style="border:1px solid rgba(255,255,255,.08);border-radius:2px;overflow:hidden;position:relative;transition:border-color .3s,transform .3s;" class="reveal" onmouseenter="this.style.borderColor='rgba(0,229,255,.35)';this.style.transform='translateY(-3px)';" onmouseleave="this.style.borderColor='rgba(255,255,255,.08)';this.style.transform='translateY(0)';"><img src="img/demo-hvac.png" alt="HVAC AI presence demo" style="width:100%;display:block;filter:brightness(.8);transition:filter .3s;" onmouseenter="this.style.filter='brightness(1)';" onmouseleave="this.style.filter='brightness(.8)';"/><div style="position:absolute;bottom:0;left:0;right:0;padding:12px 14px;background:linear-gradient(to top,rgba(8,12,22,.95) 0%,transparent 100%);font-family:'Syne',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center;"><span>HVAC</span><a href="https://signal-works-demo-hvac.vercel.app" target="_blank" style="font-size:.62rem;color:#00E5FF;text-decoration:none;">Live site &rarr;</a></div></div>
+  </div>
+</section>
+
+<!-- ── EMAIL CAPTURE ── -->
+<section style="padding:76px 5%;background:#0F1422;position:relative;overflow:hidden;" id="capture">
+  <div style="position:absolute;top:-80px;right:-60px;width:440px;height:440px;background:radial-gradient(circle,rgba(0,229,255,.09) 0%,transparent 70%);pointer-events:none;"></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:start;position:relative;z-index:1;">
+    <div>
+      <p style="font-family:'Inter',sans-serif;font-size:.62rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:#00E5FF;margin-bottom:13px;display:flex;align-items:center;gap:8px;" class="reveal"><span style="display:block;width:16px;height:1px;background:#00E5FF;"></span>Get Your Free Demo</p>
+      <h2 style="font-family:'Syne',sans-serif;font-size:clamp(1.8rem,2.8vw,3.4rem);font-weight:800;line-height:.94;letter-spacing:-.03em;margin-bottom:16px;word-break:keep-all;" class="reveal">We build it for you.<br/><span style="color:#00E5FF;">For free.</span><br/>You decide after.</h2>
+      <p style="font-size:.92rem;color:rgba(242,240,234,.82);line-height:1.75;font-weight:300;" class="reveal">Fill this out. We build a custom AI presence demo for your exact business and city. <strong style="color:#F2F0EA;font-weight:500;">No call. No pitch. Your demo in your inbox.</strong> You see it first. Then you decide.</p>
+    </div>
+    <div>
+      <form id="capture-form" action="https://formspree.io/f/boubacar" method="POST" style="display:flex;flex-direction:column;gap:11px;" class="reveal">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;">
+          <input type="text" name="name" placeholder="Your name" required style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:2px;padding:12px 14px;font-family:'Inter',sans-serif;font-size:.86rem;color:#F2F0EA;outline:none;width:100%;transition:border-color .2s;" onfocus="this.style.borderColor='#00E5FF';" onblur="this.style.borderColor='rgba(255,255,255,.08)';"/>
+          <input type="text" name="business" placeholder="Business name" required style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:2px;padding:12px 14px;font-family:'Inter',sans-serif;font-size:.86rem;color:#F2F0EA;outline:none;width:100%;transition:border-color .2s;" onfocus="this.style.borderColor='#00E5FF';" onblur="this.style.borderColor='rgba(255,255,255,.08)';"/>
+        </div>
+        <input type="email" name="email" placeholder="Email address" required style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:2px;padding:12px 14px;font-family:'Inter',sans-serif;font-size:.86rem;color:#F2F0EA;outline:none;width:100%;transition:border-color .2s;" onfocus="this.style.borderColor='#00E5FF';" onblur="this.style.borderColor='rgba(255,255,255,.08)';"/>
+        <input type="text" name="city" placeholder="City and state (e.g. Sandy, UT)" required style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:2px;padding:12px 14px;font-family:'Inter',sans-serif;font-size:.86rem;color:#F2F0EA;outline:none;width:100%;transition:border-color .2s;" onfocus="this.style.borderColor='#00E5FF';" onblur="this.style.borderColor='rgba(255,255,255,.08)';"/>
+        <input type="text" name="niche" placeholder="Your industry (e.g. Roofing, HVAC, Dental)" required style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:2px;padding:12px 14px;font-family:'Inter',sans-serif;font-size:.86rem;color:#F2F0EA;outline:none;width:100%;transition:border-color .2s;" onfocus="this.style.borderColor='#00E5FF';" onblur="this.style.borderColor='rgba(255,255,255,.08)';"/>
+        <button type="submit" id="form-submit" style="background:#00E5FF;color:#080C16;font-family:'Syne',sans-serif;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border:none;padding:14px 20px;border-radius:2px;cursor:pointer;width:100%;transition:background .2s,box-shadow .2s;" onmouseenter="this.style.background='#FFB830';this.style.boxShadow='0 0 32px rgba(0,229,255,.28)';" onmouseleave="this.style.background='#00E5FF';this.style.boxShadow='none';"><span id="submit-text">Build My Free Demo</span></button>
+        <p style="font-size:.68rem;color:rgba(242,240,234,.65);text-align:center;line-height:1.6;">No spam. No sales call. Your demo arrives within 48 hours.</p>
+      </form>
+      <div id="form-success" style="display:none;text-align:center;padding:28px;font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:#00E5FF;line-height:1.5;">Your demo request is in.<br/>Check your inbox within 48 hours.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FAQ ── -->
+<section class="faq">
+  <div class="faq-inner">
+  <h2 class="faq-h2 reveal">Questions.</h2>
+  <div class="faq-list">
+    <div class="faq-item">
+      <button class="faq-q">
+        Is my business actually invisible on ChatGPT right now?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">
+        Probably. Ask ChatGPT right now: "Who is the best [your service] in [your city]?" If your business name does not appear, you are invisible. Most local businesses are. AI models pull from structured, crawlable data. If your site is not built for that, you do not exist in those answers.
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q">
+        How is this different from SEO?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">
+        SEO is built for Google's link-based results. AI search works differently. It looks for structured, authoritative, context-rich content that directly answers questions. The architecture is different. The signals are different. You need both, and they do not overlap as much as people assume.
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q">
+        Do I need to replace my current website?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">
+        No. We build a separate AI-optimized presence that works alongside your current site. Your existing website stays exactly as it is. The Signal Works build is specifically architected for AI readability. Two sites, two jobs, one owner.
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q">
+        How fast does this actually work?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">
+        Most clients see their business appearing in AI answers within 30 days of launch. AI platforms re-index content on different schedules, so results compound over time. The build itself takes two weeks from first conversation to live.
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q">
+        What does it cost?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">
+        Reply to any Signal Works email and we will talk through it. Pricing depends on the number of service areas and categories you want to cover. There is no retainer model. You pay once, you own it.
+      </div>
+    </div>
+  </div>
+  </div><!-- close faq-inner -->
+</section>
+
+<!-- Wave divider -->
+<div class="wave-bottom">
+  <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="height:60px;background:#141927;">
+    <path d="M0,40 C360,0 1080,60 1440,20 L1440,0 L0,0 Z" fill="#0B0F1A"/>
+  </svg>
+</div>
+
+<!-- ── CTA ── -->
+<section class="cta-section">
+  <div class="cta-bg-glow"></div>
+  <p class="cta-eyebrow reveal">Ready to show up</p>
+  <h2 class="cta-h2 reveal">
+    Your competitor<br/>just asked us<br/><em>this morning.</em>
+  </h2>
+  <p class="cta-sub reveal">
+    Reply to any Signal Works email. We build a free demo of your
+    specific business in AI search. You see it before you decide anything.
+  </p>
+  <div class="cta-buttons reveal">
+    <a href="mailto:boubacar@catalystworks.consulting" class="btn-primary magnetic-btn">
+      <span>Get Your Free Demo</span>
+    </a>
+    <a href="https://catalystworks.consulting" target="_blank" class="btn-ghost magnetic-btn">About Catalyst Works</a>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-brand">Signal<span>.</span>Works</div>
+  <p class="footer-copy">A Catalyst Works product. &copy; 2026 Catalyst Works Consulting.</p>
+  <a href="https://catalystworks.consulting" class="footer-link">catalystworks.consulting</a>
+</footer>
+
+<!-- Schema.org JSON-LD -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "Signal Works by Catalyst Works",
+  "description": "Signal Works builds AI presence for local Utah businesses so they appear in ChatGPT, Perplexity, and Google AI answers.",
+  "url": "https://catalystworks.consulting/signal",
+  "founder": { "@type": "Person", "name": "Boubacar Barry" },
+  "serviceArea": { "@type": "State", "name": "Utah" },
+  "makesOffer": [
+    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "AI Presence Build for Local Businesses" } }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is my business visible on ChatGPT?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Most local businesses are not. AI models pull from structured, crawlable data. If your site is not built for that, you do not appear in AI answers." }
+    },
+    {
+      "@type": "Question",
+      "name": "How is AI presence different from SEO?",
+      "acceptedAnswer": { "@type": "Answer", "text": "SEO is built for Google link-based results. AI search requires different architecture: structured, authoritative, context-rich content that directly answers questions." }
+    },
+    {
+      "@type": "Question",
+      "name": "How fast does Signal Works deliver results?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Most clients appear in AI answers within 30 days of launch. The build takes two weeks." }
+    }
+  ]
+}
+</script>
+
+<!-- GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+<script>
+  gsap.registerPlugin(ScrollTrigger);
+
+  // ── DOM splitChars (no SplitText CDN -- Club plugin would 404) ──
+  function splitChars(el) {
+    const chars = [];
+    const walk = (node) => {
+      if (node.nodeType === 3) {
+        const frag = document.createDocumentFragment();
+        for (const ch of node.textContent) {
+          if (ch === ' ' || ch === '\n') {
+            frag.appendChild(document.createTextNode(' '));
+          } else {
+            const outer = document.createElement('span');
+            outer.style.cssText = 'display:inline-block;overflow:hidden;';
+            const inner = document.createElement('span');
+            inner.style.display = 'inline-block';
+            inner.textContent = ch;
+            outer.appendChild(inner);
+            frag.appendChild(outer);
+            chars.push(inner);
+          }
+        }
+        node.parentNode.replaceChild(frag, node);
+      } else if (node.nodeType === 1) {
+        Array.from(node.childNodes).forEach(walk);
+      }
+    };
+    Array.from(el.childNodes).forEach(walk);
+    return chars;
+  }
+
+  // ── CUSTOM CURSOR ──
+  const cursor = document.getElementById('cursor');
+  const ring   = document.getElementById('cursor-ring');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+
+  gsap.ticker.add(() => {
+    rx += (mx - rx) * 0.14;
+    ry += (my - ry) * 0.14;
+    gsap.set(cursor, { x: mx, y: my });
+    gsap.set(ring,   { x: rx, y: ry });
+  });
+
+  // Only links and buttons get the square cursor style -- NOT content panels
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => document.body.classList.add('cursor-link'));
+    el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-link'));
+  });
+  document.querySelectorAll('.magnetic-btn').forEach(el => {
+    el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+    el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+  });
+
+  // ── NAV SCROLL ──
+  const nav = document.getElementById('main-nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // ── PARTICLE CANVAS (Option B background) ──
+  const canvas = document.getElementById('particle-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+
+  const NODE_COUNT = 80, CONNECT_DIST = 130, MOUSE_ATTRACT = 180;
+  const nodes = [];
+  for (let i = 0; i < NODE_COUNT; i++) {
+    const accent = Math.random() < 0.12;
+    nodes.push({
+      x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4,
+      r: accent ? 3.5 : 1.5 + Math.random() * 1.5,
+      pulse: Math.random() * Math.PI * 2,
+      pulseSpeed: 0.018 + Math.random() * 0.022, accent
+    });
+  }
+  let pmx = -1000, pmy = -1000;
+  document.addEventListener('mousemove', e => { pmx = e.clientX; pmy = e.clientY; });
+  (function drawParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    nodes.forEach(n => {
+      const dx = pmx - n.x, dy = pmy - n.y;
+      const d = Math.sqrt(dx * dx + dy * dy);
+      if (d < MOUSE_ATTRACT) { const f = (1 - d / MOUSE_ATTRACT) * 0.012; n.vx += dx * f * 0.02; n.vy += dy * f * 0.02; }
+      n.vx *= 0.985; n.vy *= 0.985;
+      n.x += n.vx; n.y += n.vy; n.pulse += n.pulseSpeed;
+      if (n.x < -10) n.x = canvas.width + 10;
+      if (n.x > canvas.width + 10) n.x = -10;
+      if (n.y < -10) n.y = canvas.height + 10;
+      if (n.y > canvas.height + 10) n.y = -10;
+    });
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const a = nodes[i], b = nodes[j];
+        const dx = a.x - b.x, dy = a.y - b.y;
+        const d = Math.sqrt(dx * dx + dy * dy);
+        if (d < CONNECT_DIST) {
+          ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+          ctx.strokeStyle = 'rgba(0,229,255,' + ((1 - d / CONNECT_DIST) * 0.18) + ')';
+          ctx.lineWidth = 0.8; ctx.stroke();
+        }
+      }
+    }
+    nodes.forEach(n => {
+      const pf = n.accent ? 0.5 + 0.5 * Math.sin(n.pulse) : 1;
+      const alpha = n.accent ? 0.55 + 0.45 * pf : 0.3 + 0.2 * Math.sin(n.pulse);
+      if (n.accent) {
+        const g = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r * 5);
+        g.addColorStop(0, 'rgba(0,229,255,' + (alpha * 0.5) + ')');
+        g.addColorStop(1, 'rgba(0,229,255,0)');
+        ctx.beginPath(); ctx.arc(n.x, n.y, n.r * 5, 0, Math.PI * 2);
+        ctx.fillStyle = g; ctx.fill();
+      }
+      ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(0,229,255,' + alpha + ')'; ctx.fill();
+    });
+    requestAnimationFrame(drawParticles);
+  })();
+
+  // ── PRE-LOADER SEQUENCE (Option A) ──
+  const preloader = document.getElementById('preloader');
+  const userText = document.getElementById('user-text');
+  const userTcursor = document.getElementById('user-tcursor');
+  const msgUser = document.getElementById('msg-user');
+  const msgThinking = document.getElementById('msg-thinking');
+  const msgAi = document.getElementById('msg-ai');
+  const aiName = document.getElementById('ai-name');
+  const aiSuffix = document.getElementById('ai-suffix');
+  const aiStars = document.getElementById('ai-stars');
+  const aiTcursor = document.getElementById('ai-tcursor');
+  const thinkingDots = document.getElementById('thinking-dots');
+
+  function launchHero() {
+    const h1 = document.getElementById('hero-h1');
+    const allChars = [];
+    h1.querySelectorAll('.line').forEach(line => allChars.push(...splitChars(line)));
+    gsap.timeline({ delay: 0.2 })
+      .to('#main-nav', { opacity: 1, duration: 0.5, ease: 'power2.out' })
+      .from(allChars, { y: 90, opacity: 0, rotateX: -40, stagger: 0.025, duration: 0.9, ease: 'expo.out' }, '-=0.1')
+      .to('#hero-eyebrow', { opacity: 1, duration: 0.6, ease: 'power3.out' }, '-=0.5')
+      .to('#hero-split', { opacity: 1, duration: 0.7, ease: 'power3.out' }, '-=0.3');
+  }
+
+  function exitPreloader() {
+    preloader.classList.add('exit');
+    setTimeout(launchHero, 500);
+    setTimeout(() => { preloader.style.display = 'none'; }, 1400);
+  }
+
+  document.getElementById('skip-btn').addEventListener('click', exitPreloader);
+
+  const question = 'Who is the best roofer in Sandy, Utah?';
+  const businessName = '[Your Business Name]';
+  const suffixStr = ' is the most recommended roofer in Sandy';
+  const starsStr = ' ★★★★★ · 4.9';
+
+  gsap.to(msgUser, { opacity: 1, duration: 0.4, ease: 'power2.out', delay: 0.7 });
+
+  let qi = 0;
+  function typeQ() {
+    if (qi < question.length) {
+      userText.textContent += question[qi++];
+      setTimeout(typeQ, 44 + Math.random() * 28);
+    } else {
+      userTcursor.style.display = 'none';
+      setTimeout(showThinking, 350);
+    }
+  }
+  setTimeout(typeQ, 1100);
+
+  function showThinking() {
+    gsap.to(msgThinking, { opacity: 1, duration: 0.35, ease: 'power2.out' });
+    thinkingDots.classList.add('visible');
+    setTimeout(showAiResponse, 1900);
+  }
+
+  function showAiResponse() {
+    thinkingDots.classList.remove('visible');
+    gsap.to(msgThinking, { opacity: 0, duration: 0.2 });
+    aiTcursor.style.display = 'inline-block';
+    gsap.to(msgAi, { opacity: 1, duration: 0.3, ease: 'power2.out' });
+    let ni = 0;
+    function typeName() {
+      if (ni < businessName.length) { aiName.textContent += businessName[ni++]; setTimeout(typeName, 55); }
+      else {
+        let si = 0;
+        function typeSuffix() {
+          if (si < suffixStr.length) { aiSuffix.textContent += suffixStr[si++]; setTimeout(typeSuffix, 22); }
+          else {
+            let ti = 0;
+            function addStar() {
+              if (ti < starsStr.length) { aiStars.textContent += starsStr[ti++]; setTimeout(addStar, 80); }
+              else { aiTcursor.style.display = 'none'; setTimeout(exitPreloader, 1800); }
+            }
+            setTimeout(addStar, 200);
+          }
+        }
+        setTimeout(typeSuffix, 150);
+      }
+    }
+    setTimeout(typeName, 180);
+  }
+
+  // Nav starts hidden, revealed by launchHero
+  gsap.set('#main-nav', { opacity: 0 });
+
+  // ── MAGNETIC BUTTONS ──
+  document.querySelectorAll('.magnetic-btn').forEach(btn => {
+    btn.addEventListener('mousemove', e => {
+      const rect = btn.getBoundingClientRect();
+      const dx = e.clientX - (rect.left + rect.width / 2);
+      const dy = e.clientY - (rect.top  + rect.height / 2);
+      gsap.to(btn, { x: dx * 0.28, y: dy * 0.28, duration: 0.4, ease: 'power2.out' });
+    });
+    btn.addEventListener('mouseleave', () => {
+      gsap.to(btn, { x: 0, y: 0, duration: 0.6, ease: 'elastic.out(1, 0.4)' });
+    });
+  });
+
+  // ── SCROLL REVEALS -- set initial state then animate ──
+  gsap.utils.toArray('.reveal').forEach(el => {
+    gsap.set(el, { opacity: 0, y: 28 });
+    gsap.to(el, {
+      y: 0, opacity: 1, duration: 0.75,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: el,
+        start: 'top 98%',
+        toggleActions: 'play none none none',
+        once: true
+      }
+    });
+  });
+
+  // ── 3D STEP PANELS ──
+  gsap.utils.toArray('.step-panel').forEach((panel, i) => {
+    gsap.to(panel, {
+      rotateY: 0, rotateX: 0, translateZ: 0, opacity: 1,
+      duration: 1, ease: 'expo.out',
+      scrollTrigger: { trigger: panel, start: 'top 85%', toggleActions: 'play none none none' },
+      delay: i * 0.15
+    });
+  });
+
+  // ── STAT COUNTERS ──
+  const statConfigs = [
+    { id: 'stat-1', end: 97, suffix: '%' },
+    { id: 'stat-2', end: 4,  suffix: 'x' },
+    { id: 'stat-3', end: 58, suffix: '%' },
+    { id: 'stat-4', end: 0,  suffix: '' },
+  ];
+
+  statConfigs.forEach(cfg => {
+    const el = document.getElementById(cfg.id);
+    const parent = el.closest('.stat-item');
+    gsap.to({ val: 0 }, {
+      val: cfg.end,
+      duration: 2.2,
+      ease: 'power2.out',
+      scrollTrigger: { trigger: parent, start: 'top 80%', toggleActions: 'play none none none' },
+      onUpdate: function() {
+        el.textContent = Math.round(this.targets()[0].val) + cfg.suffix;
+      },
+      onStart: function() {
+        gsap.to(parent, { opacity: 1, duration: 0.4 });
+      }
+    });
+  });
+
+  // ── TYPEWRITER ──
+  var twWords = ['roofer','HVAC company','dentist','plumber','chiropractor','landscaper'];
+  var twIdx = 0;
+  var twEl = document.getElementById('tw-word');
+  if (twEl) {
+    setInterval(function() {
+      twIdx = (twIdx + 1) % twWords.length;
+      gsap.to(twEl, { opacity: 0, y: -6, duration: 0.16, onComplete: function() {
+        twEl.textContent = twWords[twIdx];
+        gsap.fromTo(twEl, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.22 });
+      }});
+    }, 2100);
+  }
+
+  // Hero uses Ken Burns photo animation -- no video fallback needed
+
+  // ── FORM SUBMIT ──
+  var capForm = document.getElementById('capture-form');
+  if (capForm) {
+    capForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      var btn = document.getElementById('submit-text');
+      if (btn) btn.textContent = 'Sending...';
+      try {
+        var res = await fetch(capForm.action, {
+          method: 'POST',
+          headers: { 'Accept': 'application/json' },
+          body: new FormData(capForm)
+        });
+        if (res.ok) {
+          capForm.style.display = 'none';
+          var suc = document.getElementById('form-success');
+          if (suc) suc.style.display = 'block';
+        } else {
+          if (btn) btn.textContent = 'Try again';
+        }
+      } catch(err) {
+        if (btn) btn.textContent = 'Try again';
+      }
+    });
+  }
+
+  // ── FAQ ACCORDION ──
+  document.querySelectorAll('.faq-q').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.closest('.faq-item');
+      const answer = item.querySelector('.faq-a');
+      const isOpen = item.classList.contains('open');
+
+      document.querySelectorAll('.faq-item.open').forEach(openItem => {
+        openItem.classList.remove('open');
+        openItem.querySelector('.faq-a').classList.remove('open');
+      });
+
+      if (!isOpen) {
+        item.classList.add('open');
+        answer.classList.add('open');
+      }
+    });
+  });
+
+  // ── CTA SECTION clip-path reveal ──
+  gsap.from('.cta-section', {
+    clipPath: 'inset(8% 4% 8% 4% round 4px)',
+    opacity: 0.4,
+    duration: 1.2,
+    ease: 'expo.out',
+    scrollTrigger: { trigger: '.cta-section', start: 'top 80%', toggleActions: 'play none none none' }
+  });
+
+  // ── DEMO CARD stagger ──
+  gsap.utils.toArray('.demo-card.reveal').forEach((card, i) => {
+    gsap.from(card, {
+      y: 50, opacity: 0,
+      duration: 0.8, ease: 'power3.out',
+      scrollTrigger: { trigger: '.demos-grid', start: 'top 80%', toggleActions: 'play none none none' },
+      delay: i * 0.1
+    });
+  });
+
+  // ── BEFORE/AFTER scrub parallax ──
+  gsap.from('.ba-col.before', {
+    x: -30, opacity: 0.3,
+    ease: 'none',
+    scrollTrigger: { trigger: '.ba-split', start: 'top 80%', end: 'bottom 60%', scrub: 1 }
+  });
+  gsap.from('.ba-col.after', {
+    x: 30, opacity: 0.3,
+    ease: 'none',
+    scrollTrigger: { trigger: '.ba-split', start: 'top 80%', end: 'bottom 60%', scrub: 1 }
+  });
+
+</script>
+</body>
+</html>
