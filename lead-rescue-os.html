@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lead Rescue OS for HVAC and Roofing Shops | Signal Works</title>
+<meta name="description" content="Catch missed calls and book same-day callbacks for HVAC and roofing shops. 30 recovered leads in 30 days, or I keep working until you hit it."/>
+<meta property="og:title" content="Lead Rescue OS for HVAC and Roofing Shops | Signal Works"/>
+<meta property="og:description" content="Stop bleeding jobs you are already paying Google to send you. 30 recovered leads in 30 days or I keep working."/>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+<link rel="canonical" href="https://geolisted.co/lead-rescue-os"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#060810;
+  --ink2:#0E1320;
+  --surface:#111827;
+  --s2:#1a2235;
+  --signal:#00E5FF;
+  --sigD:#00B8CC;
+  --gold:#FFB830;
+  --red:#FF3B3B;
+  --green:#00E096;
+  --white:#F2EFE8;
+  --muted:rgba(242,239,232,.62);
+  --dim:rgba(242,239,232,.32);
+  --border:rgba(255,255,255,.07);
+  --fH:'Syne',sans-serif;
+  --fS:'DM Serif Display',serif;
+  --fM:'DM Mono',monospace;
+}
+html{background:var(--ink);scroll-behavior:smooth}
+body{font-family:var(--fH);background:var(--ink);color:var(--white);overflow-x:hidden;-webkit-font-smoothing:antialiased;cursor:none}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+
+/* CURSOR */
+#cur,#cur2{position:fixed;border-radius:50%;pointer-events:none;z-index:8999;top:0;left:0;transform:translate(-50%,-50%)}
+#cur{width:7px;height:7px;background:var(--signal);transition:width .15s,height .15s,background .15s}
+#cur2{width:34px;height:34px;border:1px solid rgba(0,229,255,.4);transition:width .25s cubic-bezier(.16,1,.3,1),height .25s cubic-bezier(.16,1,.3,1),border-color .2s}
+body.cL #cur{background:var(--gold);width:5px;height:5px}
+body.cL #cur2{width:54px;height:54px;border-color:var(--gold)}
+
+/* CANVAS */
+#bg{position:fixed;inset:0;z-index:0}
+
+/* GRAIN */
+#grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.025;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:160px}
+
+/* NAV (seamless, no border) */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:800;height:62px;
+  display:flex;align-items:center;justify-content:space-between;padding:0 6%;
+  background:rgba(6,8,16,.78);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+  opacity:0;transition:opacity .5s;
+}
+nav.vis{opacity:1}
+.logo{font-family:var(--fH);font-weight:800;font-size:17px;letter-spacing:-.02em;display:inline-flex;align-items:center;gap:10px}
+.logo em{font-style:normal;color:var(--signal)}
+.logo-mark{width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;color:var(--signal)}
+.btn-nav{padding:10px 22px;background:var(--signal);color:var(--ink);font-family:var(--fH);font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;border-radius:2px;transition:background .15s,transform .12s}
+.btn-nav:hover{background:var(--sigD);transform:translateY(-1px)}
+
+/* HERO */
+#hero{
+  position:relative;z-index:2;
+  width:100vw;min-height:100svh;
+  display:grid;grid-template-columns:1.15fr 1fr;
+  align-items:center;padding:96px 6% 72px;gap:48px;
+}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--fM);font-size:10px;letter-spacing:.2em;
+  color:var(--signal);text-transform:uppercase;
+  border:1px solid rgba(0,229,255,.2);padding:6px 14px;border-radius:2px;
+  margin-bottom:32px;
+}
+.eyebrow::before{content:'';width:5px;height:5px;background:var(--signal);border-radius:50%;animation:blink 1.8s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.2;transform:scale(.5)}}
+
+.h1{font-family:var(--fH);font-weight:800;font-size:clamp(42px,6vw,82px);line-height:.94;letter-spacing:-.04em;margin-bottom:28px;color:var(--white)}
+.h1 em{font-family:var(--fS);font-style:italic;font-weight:400;color:var(--signal);letter-spacing:-.02em}
+.h1 .br{display:block}
+.sub{font-size:clamp(15px,1.4vw,18px);color:rgba(242,239,232,.78);line-height:1.7;max-width:50ch;margin-bottom:34px}
+.sub strong{color:var(--white);font-weight:600}
+
+.btns{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:22px}
+.btn-a{padding:16px 32px;background:var(--signal);color:var(--ink);font-family:var(--fH);font-weight:800;font-size:13px;letter-spacing:.06em;text-transform:uppercase;border-radius:2px;transition:background .15s,transform .12s,box-shadow .2s;display:inline-flex;align-items:center;gap:10px}
+.btn-a:hover{background:var(--sigD);transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,229,255,.25)}
+.btn-b{padding:16px 30px;background:transparent;color:var(--white);font-family:var(--fH);font-weight:700;font-size:13px;letter-spacing:.04em;border:1px solid rgba(255,255,255,.15);border-radius:2px;transition:border-color .2s,color .2s;display:inline-flex;align-items:center;gap:8px}
+.btn-b:hover{border-color:var(--signal);color:var(--signal)}
+
+.hero-meta{font-family:var(--fM);font-size:12px;color:var(--dim);line-height:1.6;letter-spacing:.01em;max-width:42ch}
+
+/* RESCUED CALL PANEL */
+.right{display:flex;flex-direction:column;gap:18px;justify-self:end;width:100%;max-width:420px}
+.rescue-card{
+  background:rgba(255,255,255,.035);
+  border:1px solid rgba(0,229,255,.18);
+  border-radius:14px;padding:22px 24px;position:relative;overflow:hidden;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+}
+.rescue-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,229,255,.07) 0%,transparent 55%);pointer-events:none}
+.rescue-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.rescue-label{font-family:var(--fM);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);display:inline-flex;align-items:center;gap:8px}
+.rescue-label::before{content:'';width:6px;height:6px;background:var(--green);border-radius:50%;box-shadow:0 0 0 0 rgba(0,224,150,.6);animation:pulse-g 1.6s ease-out infinite}
+@keyframes pulse-g{0%{box-shadow:0 0 0 0 rgba(0,224,150,.55)}100%{box-shadow:0 0 0 12px rgba(0,224,150,0)}}
+.rescue-time{font-family:var(--fM);font-size:10px;color:var(--dim);letter-spacing:.04em}
+.rescue-row{display:flex;align-items:center;gap:14px}
+.rescue-icon{width:44px;height:44px;border-radius:50%;background:rgba(0,224,150,.1);border:1px solid rgba(0,224,150,.3);display:flex;align-items:center;justify-content:center;color:var(--green);flex-shrink:0}
+.rescue-text{flex:1;min-width:0}
+.rescue-name{font-family:var(--fH);font-weight:700;font-size:16px;color:var(--white);letter-spacing:-.01em;margin-bottom:4px}
+.rescue-detail{font-family:var(--fM);font-size:11px;color:var(--muted);line-height:1.5}
+.rescue-detail strong{color:var(--signal);font-weight:500}
+.rescue-foot{margin-top:18px;padding-top:14px;border-top:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;gap:16px;font-family:var(--fM);font-size:10px;color:var(--dim);letter-spacing:.04em;text-transform:uppercase}
+.rescue-foot strong{color:var(--white);font-weight:500;font-size:11px}
+
+.ticker-block{padding:18px 22px;border-radius:14px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.05)}
+.ticker-label{font-family:var(--fM);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.ticker-amount{font-family:var(--fH);font-weight:800;font-size:clamp(38px,5vw,56px);letter-spacing:-.04em;line-height:1;color:var(--green);display:flex;align-items:flex-start;gap:2px}
+.ticker-dollar{font-size:.55em;margin-top:.2em;opacity:.7}
+.ticker-sub{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.55}
+.ticker-sub strong{color:var(--white)}
+
+/* SECTIONS */
+.sec{padding:96px 6%;max-width:1400px;margin:0 auto;position:relative;z-index:2}
+.slabel{font-family:var(--fM);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--signal);margin-bottom:14px}
+.sh{font-family:var(--fH);font-weight:800;font-size:clamp(32px,4.5vw,58px);letter-spacing:-.03em;line-height:1.05;margin-bottom:52px;color:var(--white);max-width:22ch}
+.sh em{font-family:var(--fS);font-style:italic;font-weight:400;color:var(--signal)}
+
+/* PROBLEM (asymmetric editorial, NOT identical card grid) */
+.prob-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:2px;border:1px solid var(--border);border-radius:3px;overflow:hidden;background:var(--border)}
+.prob{background:var(--surface);padding:42px 36px;display:flex;flex-direction:column;gap:18px;min-height:280px;transition:background .25s}
+.prob:hover{background:var(--s2)}
+.prob .pnum{font-family:var(--fM);font-size:10px;letter-spacing:.18em;color:var(--dim);text-transform:uppercase}
+.prob .picon{width:42px;height:42px;border-radius:10px;background:rgba(255,59,59,.08);color:var(--red);display:flex;align-items:center;justify-content:center}
+.prob .ptitle{font-family:var(--fH);font-weight:700;font-size:clamp(20px,2.2vw,26px);letter-spacing:-.02em;line-height:1.15;color:var(--white)}
+.prob .pbody{font-size:14px;color:var(--muted);line-height:1.7;margin-top:auto}
+.prob .pbody strong{color:var(--white);font-weight:600}
+
+/* PROCESS / TIMELINE */
+.tl{position:relative;padding-left:42px;max-width:780px}
+.tl::before{content:'';position:absolute;left:9px;top:8px;bottom:8px;width:1px;background:linear-gradient(to bottom,var(--signal),rgba(0,229,255,.08))}
+.tli{position:relative;padding-bottom:44px}
+.tli:last-child{padding-bottom:0}
+.tl-dot{position:absolute;left:-42px;top:4px;width:18px;height:18px;border:2px solid var(--signal);border-radius:50%;background:var(--ink);z-index:1}
+.tl-dot::after{content:'';position:absolute;inset:4px;background:var(--signal);border-radius:50%}
+.tl-step{font-family:var(--fM);font-size:10px;letter-spacing:.16em;color:var(--signal);text-transform:uppercase;margin-bottom:8px}
+.tl-title{font-family:var(--fH);font-weight:700;font-size:clamp(20px,2.2vw,26px);color:var(--white);letter-spacing:-.02em;margin-bottom:8px}
+.tl-desc{font-size:15px;color:var(--muted);line-height:1.7;max-width:60ch}
+.tl-desc strong{color:var(--white);font-weight:600}
+
+/* CASE STUDY / RESULTS */
+.cs-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:48px;align-items:center}
+.cs-num-block{position:relative}
+.cs-pill{display:inline-flex;align-items:center;gap:8px;font-family:var(--fM);font-size:10px;color:var(--gold);letter-spacing:.16em;text-transform:uppercase;padding:6px 14px;border:1px solid rgba(255,184,48,.25);border-radius:2px;margin-bottom:22px;background:rgba(255,184,48,.04)}
+.cs-pill::before{content:'';width:6px;height:6px;background:var(--gold);border-radius:50%}
+.cs-num{font-family:var(--fH);font-weight:800;font-size:clamp(64px,9vw,128px);letter-spacing:-.05em;line-height:.92;color:var(--white)}
+.cs-num em{font-family:var(--fS);font-style:italic;font-weight:400;color:var(--signal);font-size:.55em;display:block;margin-top:6px;letter-spacing:-.02em}
+.cs-sub{font-family:var(--fM);font-size:11px;color:var(--dim);letter-spacing:.12em;text-transform:uppercase;margin-top:18px}
+
+.cs-copy p{font-size:16px;color:var(--muted);line-height:1.8;margin-bottom:18px;max-width:54ch}
+.cs-copy p:last-child{margin-bottom:0}
+.cs-copy strong{color:var(--white);font-weight:600}
+.cs-copy em{color:var(--signal);font-style:normal;font-weight:600}
+
+.cs-math-box{margin-top:32px;padding:22px 26px;background:rgba(0,229,255,.04);border-radius:10px;border:1px solid rgba(0,229,255,.12)}
+.cs-math-row{display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;font-size:14px;color:var(--muted);font-family:var(--fM)}
+.cs-math-row.tot{border-top:1px solid rgba(0,229,255,.18);margin-top:6px;padding-top:14px;color:var(--white);font-weight:500}
+.cs-math-row.tot .v{color:var(--signal);font-size:16px}
+.cs-math-row .v{color:var(--white)}
+.cs-math-note{margin-top:14px;font-family:var(--fH);font-size:12px;color:var(--dim);line-height:1.6;font-style:italic}
+
+/* FOR / NOT FOR */
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:3px}
+.fcol{background:var(--surface);padding:40px 34px;border:1px solid var(--border);border-radius:3px;transition:transform .25s}
+.fcol:hover{transform:translateY(-3px)}
+.fcol.yes{border-color:rgba(0,224,150,.2)}
+.fcol.no{border-color:var(--border)}
+.fclabel{font-family:var(--fM);font-size:10px;letter-spacing:.16em;text-transform:uppercase;font-weight:500;margin-bottom:24px;display:flex;align-items:center;gap:10px}
+.fcol.yes .fclabel{color:var(--green)}
+.fcol.no .fclabel{color:var(--dim)}
+.fclabel svg{flex-shrink:0}
+.fi{display:flex;gap:12px;align-items:flex-start;font-size:14px;color:var(--muted);padding:14px 0;border-top:1px solid var(--border);line-height:1.55}
+.fi:first-of-type{border-top:none}
+.fi strong{color:var(--white);font-weight:600}
+.fiico{flex-shrink:0;margin-top:2px}
+.yes .fiico{color:var(--green)}
+.no .fiico{color:var(--dim)}
+
+/* CTA BAND */
+.cta-band{position:relative;padding:120px 6%;text-align:center;overflow:hidden;background:var(--ink2);z-index:2}
+.cta-band::after{content:'';position:absolute;top:-120px;left:50%;transform:translateX(-50%);width:700px;height:500px;background:radial-gradient(ellipse,rgba(0,229,255,.1) 0%,rgba(255,184,48,.04) 50%,transparent 70%);pointer-events:none}
+.cta-inner{position:relative;z-index:1;max-width:780px;margin:0 auto}
+.cta-h{font-family:var(--fH);font-weight:800;font-size:clamp(38px,6vw,72px);letter-spacing:-.04em;line-height:1.0;margin-bottom:22px;color:var(--white)}
+.cta-h em{font-family:var(--fS);font-style:italic;font-weight:400;color:var(--signal)}
+.cta-sub{font-size:17px;color:var(--muted);line-height:1.7;margin-bottom:42px;max-width:54ch;margin-left:auto;margin-right:auto}
+.cta-btns{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-bottom:26px}
+.cta-trust{display:flex;flex-wrap:wrap;gap:22px;justify-content:center}
+.ti{display:flex;align-items:center;gap:7px;font-family:var(--fM);font-size:11px;color:var(--dim);letter-spacing:.04em}
+.tdot{width:5px;height:5px;background:var(--green);border-radius:50%;flex-shrink:0}
+
+/* FOOTER (minimal, seamless gradient hairline only) */
+footer{padding:38px 6%;display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:center;position:relative;z-index:2;background:var(--ink)}
+footer::before{content:'';position:absolute;top:0;left:6%;right:6%;height:1px;background:linear-gradient(90deg,transparent,rgba(0,229,255,.18),transparent)}
+.flogo{font-family:var(--fH);font-weight:800;font-size:15px}
+.flogo em{font-style:normal;color:var(--signal)}
+footer p{font-size:12px;color:var(--dim);line-height:1.6}
+footer a{color:var(--muted);transition:color .2s}
+footer a:hover{color:var(--signal)}
+
+/* RESPONSIVE */
+@media(max-width:960px){
+  #hero{grid-template-columns:1fr;padding:96px 6% 60px;gap:36px}
+  .right{justify-self:stretch;max-width:none}
+  .prob-grid{grid-template-columns:1fr}
+  .cs-grid{grid-template-columns:1fr;gap:32px}
+  .fgrid{grid-template-columns:1fr}
+  .fcol.yes{border-bottom:1px solid var(--border)}
+  footer{flex-direction:column;align-items:flex-start;gap:20px}
+}
+@media(max-width:560px){
+  .sec{padding:72px 6%}
+  .btns,.cta-btns{flex-direction:column;align-items:stretch;width:100%}
+  .btn-a,.btn-b{justify-content:center;text-align:center}
+  .cta-btns{align-items:center}
+  .cta-trust{gap:14px}
+  .h1{font-size:clamp(34px,9vw,56px)}
+  .sh{font-size:clamp(28px,7vw,44px)}
+  .tl{padding-left:32px}
+  .tl-dot{left:-32px}
+  .prob{padding:32px 26px;min-height:auto}
+}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur2"></div>
+<div id="grain"></div>
+<canvas id="bg"></canvas>
+
+<nav id="main-nav">
+  <a href="index.html" class="logo">
+    <span class="logo-mark" aria-hidden="true">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h3l3-9 4 18 3-9h7"/></svg>
+    </span>
+    Signal<em>.</em>Works
+  </a>
+  <a href="https://calendly.com/boubacarbarry/signal-works-discovery-call" class="btn-nav" target="_blank" rel="noopener">Book a call</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-left">
+    <div class="eyebrow">Lead Rescue OS / HVAC + Roofing</div>
+    <h1 class="h1">
+      <span class="br">Stop bleeding jobs</span>
+      <span class="br">you are already paying</span>
+      <span class="br"><em>Google to send you.</em></span>
+    </h1>
+    <p class="sub">I catch your missed calls, book the callbacks, and route them to your dispatch board the same day. <strong>30 recovered leads in 30 days</strong>, or I keep working until you hit it.</p>
+    <div class="btns">
+      <a href="https://calendly.com/boubacarbarry/signal-works-discovery-call" class="btn-a" target="_blank" rel="noopener">
+        Book a free strategy call
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      <a href="#process" class="btn-b">See how it works</a>
+    </div>
+    <p class="hero-meta">30 minutes. No pitch. Just a clear next step.</p>
+  </div>
+
+  <div class="right">
+    <article class="rescue-card" aria-label="Live example of a rescued lead">
+      <div class="rescue-head">
+        <div class="rescue-label">Lead rescued</div>
+        <div class="rescue-time" id="rescueTime">7:42 PM</div>
+      </div>
+      <div class="rescue-row">
+        <div class="rescue-icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="rescue-text">
+          <div class="rescue-name" id="rescueName">After-hours HVAC call</div>
+          <p class="rescue-detail">Callback booked for <strong id="rescueWhen">tomorrow 8:15 AM</strong>. <span id="rescueTail">Routed to dispatch.</span></p>
+        </div>
+      </div>
+      <div class="rescue-foot">
+        <div>Channel<br><strong>Phone</strong></div>
+        <div>Urgency<br><strong>Same-day</strong></div>
+        <div>Status<br><strong style="color:var(--green)">Booked</strong></div>
+      </div>
+    </article>
+    <div class="ticker-block">
+      <div class="ticker-label">Recovered this month (typical shop)</div>
+      <div class="ticker-amount"><span class="ticker-dollar">$</span><span id="tickerNum">0</span></div>
+      <p class="ticker-sub">Industry-benchmark recovery on a 4-10 truck shop. <strong>Your actual baseline gets pulled in week 1.</strong></p>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="sec" id="problem">
+  <p class="slabel">The leak nobody talks about</p>
+  <h2 class="sh">Your phone rings. <em>Nobody picks up.</em> A job walks.</h2>
+  <div class="prob-grid">
+    <article class="prob">
+      <div class="pnum">01 / Peak hours</div>
+      <div class="picon" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.63 3.4 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.86a16 16 0 0 0 6.23 6.23l.95-.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      </div>
+      <h3 class="ptitle">Missed during lunch, after-hours, and crew-on-a-roof moments</h3>
+      <p class="pbody">Your office line goes to voicemail when it matters most. <strong>Voicemails rarely get returned.</strong> The lead calls the next shop on the page.</p>
+    </article>
+    <article class="prob">
+      <div class="pnum">02 / Industry rate</div>
+      <div class="picon" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>
+      </div>
+      <h3 class="ptitle">30 to 40 percent of inbound calls go unanswered, on average</h3>
+      <p class="pbody">Invoca and Service Direct research on HVAC and roofing. <strong>On 200 monthly calls, that is 60 leads walking.</strong> Your actual rate may be higher.</p>
+    </article>
+    <article class="prob">
+      <div class="pnum">03 / The math</div>
+      <div class="picon" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      </div>
+      <h3 class="ptitle">Every missed call is a service ticket handed to your competitor</h3>
+      <p class="pbody">At a $1,250 average ticket, <strong>60 missed calls per month equals $75,000 of recoverable revenue.</strong> Your Google and LSA spend is already paying for those leads.</p>
+    </article>
+  </div>
+</section>
+
+<!-- SOLUTION / PROCESS -->
+<section class="sec" id="process">
+  <p class="slabel">How the build runs</p>
+  <h2 class="sh">Phone-log and form-submit intent monitoring, routed to your <em>dispatch board.</em></h2>
+  <ol class="tl">
+    <li class="tli">
+      <div class="tl-dot" aria-hidden="true"></div>
+      <div class="tl-step">Step 1 / Discovery</div>
+      <h3 class="tl-title">We pull your real numbers</h3>
+      <p class="tl-desc">30-minute call to look at your current call log, miss rate, average ticket, and CRM setup. If the math does not work, I tell you on the call and we stop there. <strong>No discovery fee.</strong></p>
+    </li>
+    <li class="tli">
+      <div class="tl-dot" aria-hidden="true"></div>
+      <div class="tl-step">Step 2 / Strategy</div>
+      <h3 class="tl-title">Scoped build plan + recovery target</h3>
+      <p class="tl-desc">I send a written scope: which calls get rescued, which forms get monitored, where the qualified leads land in your dispatch queue, and what the 30-day target looks like for your specific shop.</p>
+    </li>
+    <li class="tli">
+      <div class="tl-dot" aria-hidden="true"></div>
+      <div class="tl-step">Step 3 / Build</div>
+      <h3 class="tl-title">Twilio + Vapi + n8n + your CRM</h3>
+      <p class="tl-desc">AI voice agent answers missed calls within 2 rings, qualifies the lead (name, address, problem, urgency, callback window), and pushes the job into your dispatcher's queue tagged <strong>AI-rescued</strong>. Built on your accounts. <strong>You own the stack.</strong></p>
+    </li>
+    <li class="tli">
+      <div class="tl-dot" aria-hidden="true"></div>
+      <div class="tl-step">Step 4 / Launch</div>
+      <h3 class="tl-title">Live in 2 weeks, your CSR trained</h3>
+      <p class="tl-desc">SMS reminders fire 15 minutes before each callback. Your CSR or tech calls back with full context. We monitor the first 14 days closely and tune the voice agent based on real calls.</p>
+    </li>
+    <li class="tli">
+      <div class="tl-dot" aria-hidden="true"></div>
+      <div class="tl-step">Step 5 / Ongoing optimization</div>
+      <h3 class="tl-title">Monthly recovery report and tuning</h3>
+      <p class="tl-desc">Each month you get a one-page report: calls rescued, callbacks booked, jobs closed, revenue recovered. I tune the voice agent on real conversations. Cancel the retainer anytime, the system keeps running.</p>
+    </li>
+  </ol>
+</section>
+
+<!-- CASE STUDY / PRE-REVENUE COHORT -->
+<section class="sec" id="results">
+  <p class="slabel">What this looks like in dollars</p>
+  <h2 class="sh">Founding case-study cohort. <em>3 spots.</em></h2>
+  <div class="cs-grid">
+    <div class="cs-num-block">
+      <div class="cs-pill">Pre-revenue / founding cohort</div>
+      <div class="cs-num">$9K to $45K<em>recovered per month, typical range</em></div>
+      <div class="cs-sub">Based on 30 leads x $300 to $1,500 avg ticket</div>
+    </div>
+    <div class="cs-copy">
+      <p>I am Boubacar. I am pre-revenue on Lead Rescue OS. No paid clients yet, and I am not going to fabricate ones to sell you on a math you can already do yourself.</p>
+      <p>Here is the deal: the first three shops who sign on become my <strong>founding case-study cohort</strong>. You get a $2,000 discount and 60 days of maintenance free, in exchange for a named case study after month 2 if the system performs.</p>
+      <p>If month 1 lands at 22 recovered leads instead of 30, <em>I work month 2 free until we cross the line.</em> No escape hatches, no fine print.</p>
+
+      <div class="cs-math-box">
+        <div class="cs-math-row"><span>Missed calls per month (200 inbound, 30% miss rate)</span><span class="v">60</span></div>
+        <div class="cs-math-row"><span>Recovery rate target (industry benchmark)</span><span class="v">50%</span></div>
+        <div class="cs-math-row"><span>Recovered leads per month</span><span class="v">30</span></div>
+        <div class="cs-math-row tot"><span>At $300 avg service call</span><span class="v">$9,000</span></div>
+        <div class="cs-math-row tot"><span>At $1,500 avg repair / install</span><span class="v">$45,000</span></div>
+      </div>
+      <p class="cs-math-note">Assumptions, not promises. Your numbers depend on call volume, ticket size, and how fast your tech responds. We pull your actual baseline in week 1 and recalibrate.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WHO FOR / NOT FOR -->
+<section class="sec" id="fit">
+  <p class="slabel">Honest fit check</p>
+  <h2 class="sh">Built for a <em>specific shop.</em> Not every shop.</h2>
+  <div class="fgrid">
+    <article class="fcol yes">
+      <div class="fclabel">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+        This is for you
+      </div>
+      <div class="fi"><span class="fiico" aria-hidden="true">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </span><span><strong>HVAC or roofing shop, 4 to 10 trucks.</strong> $500K to $3M annual revenue. Owner-operator or small leadership team.</span></div>
+      <div class="fi"><span class="fiico" aria-hidden="true">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </span><span>You are running Google Ads or Local Service Ads and feeling the cost-per-lead climb.</span></div>
+      <div class="fi"><span class="fiico" aria-hidden="true">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </span><span>Your CSR or office manager is stretched, calls drop during peaks and after 5pm.</span></div>
+      <div class="fi"><span class="fiico" aria-hidden="true">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </span><span>You run ServiceTitan, Housecall Pro, Jobber, or something CRM-shaped that has an API.</span></div>
+    </article>
+    <article class="fcol no">
+      <div class="fclabel">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        Not for you
+      </div>
+      <div class="fi"><span class="fiico" aria-hidden="true">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </span><span>Solo operator or under 4 trucks. Your call volume is too low to feed the math.</span></div>
+      <div class="fi"><span class="fiico" aria-hidden="true">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </span><span>Referral-dominant shop with no acquisition leak. Nothing to rescue.</span></div>
+      <div class="fi"><span class="fiico" aria-hidden="true">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </span><span>Multi-location chain or franchise with enterprise IT. You need a different vendor.</span></div>
+      <div class="fi"><span class="fiico" aria-hidden="true">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </span><span>Looking for a marketing agency. I do not run ads. I rescue the leads your ads already produced.</span></div>
+    </article>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<section class="cta-band">
+  <div class="cta-inner">
+    <h2 class="cta-h">Ready to stop bleeding jobs you are already paying Google to <em>send you?</em></h2>
+    <p class="cta-sub">30-minute call. I look at your current call log, miss rate, average ticket, and tell you straight if this is a fit. If it is, we scope the build. If it is not, you save 4 weeks chasing the wrong fix.</p>
+    <div class="cta-btns">
+      <a href="https://calendly.com/boubacarbarry/signal-works-discovery-call" class="btn-a" target="_blank" rel="noopener">
+        Book a free strategy call
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      <a href="mailto:boubacar@catalystworks.consulting?subject=Lead%20Rescue%20OS%20-%20interested" class="btn-b">Reply by email</a>
+    </div>
+    <div class="cta-trust">
+      <div class="ti"><span class="tdot" aria-hidden="true"></span>No deposit until we agree</div>
+      <div class="ti"><span class="tdot" aria-hidden="true"></span>No pitch on the call</div>
+      <div class="ti"><span class="tdot" aria-hidden="true"></span>You own the stack</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>
+    <div class="flogo">Signal<em>.</em>Works</div>
+    <p>Productized arm of Catalyst Works Consulting.<br/>Boubacar, operator.</p>
+  </div>
+  <div style="text-align:right">
+    <p><a href="mailto:boubacar@catalystworks.consulting">boubacar@catalystworks.consulting</a></p>
+    <p>&copy; 2026 Signal Works.</p>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+/* CANVAS SIGNAL WAVES */
+const cv=document.getElementById('bg');
+const ctx=cv.getContext('2d');
+let W,H;
+function resize(){W=cv.width=innerWidth;H=cv.height=innerHeight}
+addEventListener('resize',resize);resize();
+const WAVES=[];
+function spawnWave(x,y,col){WAVES.push({x,y,r:0,maxR:Math.max(W,H)*.85,a:.35,col:col||'0,229,255',speed:1.6+Math.random()})}
+spawnWave(W*.78,H*.48);spawnWave(W*.78,H*.48);spawnWave(W*.78,H*.48);
+setInterval(()=>spawnWave(W*.78,H*.48),2400);
+const PARTS=[];
+for(let i=0;i<65;i++)PARTS.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.22,vy:(Math.random()-.5)*.22,r:.7+Math.random()*1.3,a:.07+Math.random()*.22,c:Math.random()>.82?'255,184,48':'0,229,255',p:Math.random()*Math.PI*2,ps:.008+Math.random()*.012});
+function draw(){
+  requestAnimationFrame(draw);
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#060810';ctx.fillRect(0,0,W,H);
+  const rg=ctx.createRadialGradient(W*.78,H*.48,0,W*.78,H*.48,W*.55);
+  rg.addColorStop(0,'rgba(0,229,255,.07)');rg.addColorStop(.4,'rgba(0,229,255,.02)');rg.addColorStop(1,'transparent');
+  ctx.fillStyle=rg;ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='rgba(0,229,255,.022)';ctx.lineWidth=1;
+  for(let x=0;x<W;x+=52){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke()}
+  for(let y=0;y<H;y+=52){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}
+  for(let i=WAVES.length-1;i>=0;i--){
+    const w=WAVES[i];w.r+=w.speed;w.a=.35*(1-w.r/w.maxR);
+    if(w.a<=0.004){WAVES.splice(i,1);continue}
+    ctx.beginPath();ctx.arc(w.x,w.y,w.r,0,Math.PI*2);
+    ctx.strokeStyle='rgba('+w.col+','+w.a.toFixed(3)+')';ctx.lineWidth=1.5;ctx.stroke();
+  }
+  for(const p of PARTS){
+    p.x+=p.vx;p.y+=p.vy;p.p+=p.ps;
+    if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+    const a=p.a*(.5+.5*Math.sin(p.p));
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba('+p.c+','+a+')';ctx.fill();
+  }
+  ctx.lineWidth=.5;
+  for(let i=0;i<PARTS.length;i++)for(let j=i+1;j<PARTS.length;j++){
+    const dx=PARTS[i].x-PARTS[j].x,dy=PARTS[i].y-PARTS[j].y,d=Math.sqrt(dx*dx+dy*dy);
+    if(d<100){ctx.strokeStyle='rgba(0,229,255,'+(.12*(1-d/100)).toFixed(3)+')';ctx.beginPath();ctx.moveTo(PARTS[i].x,PARTS[i].y);ctx.lineTo(PARTS[j].x,PARTS[j].y);ctx.stroke()}
+  }
+  const vg=ctx.createLinearGradient(0,0,W*.6,0);
+  vg.addColorStop(0,'rgba(6,8,16,.78)');vg.addColorStop(.4,'rgba(6,8,16,.38)');vg.addColorStop(1,'rgba(6,8,16,.04)');
+  ctx.fillStyle=vg;ctx.fillRect(0,0,W,H);
+}
+draw();
+
+/* CURSOR */
+const Cur=document.getElementById('cur'),Cur2=document.getElementById('cur2');
+let mx=W/2,my=H/2,rx=mx,ry=my;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+(function cl(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;Cur.style.cssText='left:'+mx+'px;top:'+my+'px';Cur2.style.cssText='left:'+rx+'px;top:'+ry+'px';requestAnimationFrame(cl)})();
+document.querySelectorAll('a,button').forEach(el=>{el.addEventListener('mouseenter',()=>document.body.classList.add('cL'));el.addEventListener('mouseleave',()=>document.body.classList.remove('cL'))});
+
+/* NAV REVEAL */
+window.addEventListener('load',()=>{document.getElementById('main-nav').classList.add('vis')});
+
+/* RECOVERED-LEAD TICKER */
+const tickerEl=document.getElementById('tickerNum');
+const tickerTarget=37500;
+const tickerStart=performance.now();
+function tickerFrame(now){
+  const elapsed=now-tickerStart;
+  const dur=4200;
+  const p=Math.min(elapsed/dur,1);
+  const ease=1-Math.pow(1-p,3);
+  tickerEl.textContent=Math.round(ease*tickerTarget).toLocaleString();
+  if(p<1)requestAnimationFrame(tickerFrame);
+}
+requestAnimationFrame(tickerFrame);
+
+/* RESCUE CARD ROTATION (textContent only - no innerHTML) */
+const rescues=[
+  {name:'After-hours HVAC call',when:'tomorrow 8:15 AM',tail:'Routed to dispatch.',time:'7:42 PM'},
+  {name:'Sunday roof leak',when:'same-day callback',tail:'Tech notified, ETA confirmed.',time:'11:08 AM'},
+  {name:'Lunch-hour AC repair',when:'2 PM today',tail:'Pushed to ServiceTitan queue.',time:'12:34 PM'},
+  {name:'Storm-damage shingle replace',when:'Thursday estimate',tail:'Photos requested from caller.',time:'9:20 AM'},
+];
+let rIdx=0;
+const elName=document.getElementById('rescueName');
+const elWhen=document.getElementById('rescueWhen');
+const elTail=document.getElementById('rescueTail');
+const elTime=document.getElementById('rescueTime');
+setInterval(()=>{
+  rIdx=(rIdx+1)%rescues.length;
+  const r=rescues[rIdx];
+  elName.textContent=r.name;
+  elWhen.textContent=r.when;
+  elTail.textContent=r.tail;
+  elTime.textContent=r.time;
+},3600);
+
+/* SCROLL REVEALS - fromTo, default-visible safe */
+gsap.utils.toArray('.prob').forEach((p,i)=>{
+  gsap.fromTo(p,{opacity:.35,y:24},{opacity:1,y:0,duration:.6,ease:'power2.out',scrollTrigger:{trigger:p,start:'top 88%',once:true},delay:i*.08});
+});
+gsap.utils.toArray('.tli').forEach((t,i)=>{
+  gsap.fromTo(t,{opacity:.35,x:-20},{opacity:1,x:0,duration:.55,ease:'power2.out',scrollTrigger:{trigger:t,start:'top 88%',once:true},delay:i*.06});
+});
+gsap.fromTo('.cs-num-block',{opacity:.35,y:20},{opacity:1,y:0,duration:.7,ease:'power2.out',scrollTrigger:{trigger:'.cs-num-block',start:'top 85%',once:true}});
+gsap.fromTo('.cs-copy',{opacity:.35,y:20},{opacity:1,y:0,duration:.7,ease:'power2.out',scrollTrigger:{trigger:'.cs-copy',start:'top 85%',once:true},delay:.15});
+gsap.utils.toArray('.fcol').forEach((f,i)=>{
+  gsap.fromTo(f,{opacity:.35,y:20},{opacity:1,y:0,duration:.55,ease:'power2.out',scrollTrigger:{trigger:f,start:'top 88%',once:true},delay:i*.1});
+});
+</script>
+</body>
+</html>
