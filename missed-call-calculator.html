@@ -164,6 +164,11 @@ nav.vis{opacity:1}
 }
 .result-dollar{font-size:.45em;margin-top:.32em;color:var(--signal);opacity:.85;font-weight:700}
 #resMonthly{color:var(--signal)}
+.payback-row{margin-top:18px;padding-top:18px;border-top:1px solid var(--border)}
+.payback-label{font-family:var(--fM);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.payback-val{font-family:var(--fH);font-weight:700;font-size:22px;color:var(--green);letter-spacing:-.02em;line-height:1}
+.payback-val span{font-family:var(--fS);font-style:italic;font-weight:400;font-size:28px;color:var(--green)}
+.payback-foot{font-family:var(--fM);font-size:10px;color:var(--dim);margin-top:6px;letter-spacing:.04em}
 .result-cap{font-family:var(--fH);font-weight:500;font-size:13px;color:var(--muted);line-height:1.55;margin-bottom:22px}
 .result-cap strong{color:var(--white);font-weight:600}
 
@@ -378,6 +383,11 @@ footer a:hover{color:var(--signal)}
           <div class="result-cell-val"><small>$</small><span id="resFive">1,530,000</span></div>
           <div class="result-cell-foot">Flat assumption, no growth</div>
         </div>
+      </div>
+      <div class="payback-row">
+        <div class="payback-label">Payback on Lead Rescue OS retainer</div>
+        <div class="payback-val"><span id="resPayback">0.1</span> months</div>
+        <div class="payback-foot">$1,500/mo retainer divided by your recoverable. Setup excluded.</div>
       </div>
     </article>
     <div class="caveat-block">
@@ -619,6 +629,9 @@ function calc(){
   // headline = monthly recoverable (the 50% recovery number)
   // secondary cells: worst-case leak, annual recoverable, missed calls, 5yr compound
   resMonthly.textContent=fmt(monthlyRecoverable);
+  // Payback: ,500/mo retainer / monthlyRecoverable
+  const payback = monthlyRecoverable > 0 ? (1500/monthlyRecoverable) : 999;
+  document.getElementById("resPayback").textContent = payback < 0.1 ? "<0.1" : payback.toFixed(payback < 1 ? 2 : 1);
   resRec.textContent=fmt(monthlyLeak);
   resYear.textContent=fmt(annualRecoverable);
   resMissed.textContent=fmt(missedCalls);
