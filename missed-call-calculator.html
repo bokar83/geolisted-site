@@ -408,8 +408,8 @@ footer a:hover{color:var(--signal)}
     </div>
     <div class="math-row final">
       <div class="math-step">D</div>
-      <div class="math-formula">Recoverable revenue per month <span class="ftiny">x 12 = annualized recovery</span></div>
-      <div class="math-val"><small>$</small><span id="mvD">12,750</span></div>
+      <div class="math-formula">Recoverable per month <em>x</em> 12 = annualized recovery <span class="ftiny">What you stop bleeding over a year</span></div>
+      <div class="math-val"><small>$</small><span id="mvD">306,000</span></div>
     </div>
   </div>
 </section>
@@ -624,11 +624,11 @@ function calc(){
   resMissed.textContent=fmt(missedCalls);
   resFive.textContent=fmt(fiveYearRecoverable);
 
-  // math breakdown
+  // math breakdown: A=missed, B=worst-case leak, C=monthly recoverable, D=annualized recoverable
   mvA.textContent=fmt(missedCalls);
   mvB.textContent=fmt(monthlyLeak);
   mvC.textContent=fmt(monthlyRecoverable);
-  mvD.textContent=fmt(monthlyRecoverable);
+  mvD.textContent=fmt(annualRecoverable);
 
   mfA.textContent=fmt(calls)+' calls x '+miss+'%';
   mfB.textContent=fmt(missedCalls)+' missed x $'+fmt(ticket);
