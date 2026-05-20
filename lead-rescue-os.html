@@ -96,6 +96,7 @@ nav.vis{opacity:1}
 .btn-b:hover{border-color:var(--signal);color:var(--signal)}
 
 .hero-meta{font-family:var(--fM);font-size:12px;color:var(--dim);line-height:1.6;letter-spacing:.01em;max-width:42ch}
+.hero-id{font-family:var(--fH);font-weight:500;font-size:13px;color:var(--muted);line-height:1.55;letter-spacing:0;max-width:48ch;margin-top:20px}
 
 /* RESCUED CALL PANEL */
 .right{display:flex;flex-direction:column;gap:18px;justify-self:end;width:100%;max-width:420px}
@@ -272,7 +273,8 @@ footer a:hover{color:var(--signal)}
       </a>
       <a href="#process" class="btn-b">See how it works</a>
     </div>
-    <p class="hero-meta">30 minutes. No pitch. Just a clear next step.</p>
+    <p class="hero-meta">30 minutes. No pitch. Just a clear next step. Or text <strong>+1 801-888-1963</strong>.</p>
+    <p class="hero-id">I am Boubacar. 14 years operations, 28K+ on LinkedIn, AI builder. Six figures in agency work shipped, pre-revenue on this product.</p>
   </div>
 
   <div class="right">
@@ -297,9 +299,10 @@ footer a:hover{color:var(--signal)}
       </div>
     </article>
     <div class="ticker-block">
-      <div class="ticker-label">Recovered this month (typical shop)</div>
-      <div class="ticker-amount"><span class="ticker-dollar">$</span><span id="tickerNum">0</span></div>
-      <p class="ticker-sub">Industry-benchmark recovery on a 4-10 truck shop. <strong>Your actual baseline gets pulled in week 1.</strong></p>
+      <div class="ticker-label">Industry benchmark / 4-10 truck shop</div>
+      <p class="ticker-sub" style="margin:0 0 12px 0">Invoca + Service Direct 2024 on HVAC and roofing. <strong>Your number gets pulled in week 1.</strong></p>
+      <div class="ticker-amount"><span class="ticker-dollar">$</span><span id="tickerNum">37,500</span></div>
+      <p class="ticker-sub">Typical month of recovered revenue, by the data. Not a promise.</p>
     </div>
   </div>
 </section>
@@ -339,7 +342,7 @@ footer a:hover{color:var(--signal)}
 <!-- SOLUTION / PROCESS -->
 <section class="sec" id="process">
   <p class="slabel">How the build runs</p>
-  <h2 class="sh">Phone-log and form-submit intent monitoring, routed to your <em>dispatch board.</em></h2>
+  <h2 class="sh">Phone calls and forms you miss, rescued and routed to your <em>dispatch the same day.</em></h2>
   <ol class="tl">
     <li class="tli">
       <div class="tl-dot" aria-hidden="true"></div>
@@ -356,8 +359,8 @@ footer a:hover{color:var(--signal)}
     <li class="tli">
       <div class="tl-dot" aria-hidden="true"></div>
       <div class="tl-step">Step 3 / Build</div>
-      <h3 class="tl-title">Twilio + Vapi + n8n + your CRM</h3>
-      <p class="tl-desc">AI voice agent answers missed calls within 2 rings, qualifies the lead (name, address, problem, urgency, callback window), and pushes the job into your dispatcher's queue tagged <strong>AI-rescued</strong>. Built on your accounts. <strong>You own the stack.</strong></p>
+      <h3 class="tl-title">AI voice agent answers, qualifies, hands off</h3>
+      <p class="tl-desc">An AI voice agent answers missed calls within 2 rings, qualifies the lead (name, address, problem, urgency, callback window), and pushes the job into your dispatcher's queue tagged <strong>AI-rescued</strong>. <strong>Built on accounts in your name.</strong> Cancel the retainer anytime, the system keeps running on your stack, not mine.</p>
     </li>
     <li class="tli">
       <div class="tl-dot" aria-hidden="true"></div>
@@ -387,7 +390,8 @@ footer a:hover{color:var(--signal)}
     <div class="cs-copy">
       <p>I am Boubacar. I am pre-revenue on Lead Rescue OS. No paid clients yet, and I am not going to fabricate ones to sell you on a math you can already do yourself.</p>
       <p>Here is the deal: the first three shops who sign on become my <strong>founding case-study cohort</strong>. You get a $2,000 discount and 60 days of maintenance free, in exchange for a named case study after month 2 if the system performs.</p>
-      <p>If month 1 lands at 22 recovered leads instead of 30, <em>I work month 2 free until we cross the line.</em> No escape hatches, no fine print.</p>
+      <p><strong>Founding price:</strong> $6,000 setup + $1,500/mo. Standard price after the 3 spots fill: $8,000 setup + $1,500/mo. <strong>Deposit only after we agree on scope on the call.</strong></p>
+      <p>If month 1 lands at 22 recovered leads instead of 30, <em>I work month 2 free until we cross the line.</em> If month 1 lands at zero, <em>I refund the deposit in full.</em> No escape hatches, no fine print.</p>
 
       <div class="cs-math-box">
         <div class="cs-math-row"><span>Missed calls per month (200 inbound, 30% miss rate)</span><span class="v">60</span></div>
@@ -536,19 +540,8 @@ document.querySelectorAll('a,button').forEach(el=>{el.addEventListener('mouseent
 /* NAV REVEAL */
 window.addEventListener('load',()=>{document.getElementById('main-nav').classList.add('vis')});
 
-/* RECOVERED-LEAD TICKER */
-const tickerEl=document.getElementById('tickerNum');
-const tickerTarget=37500;
-const tickerStart=performance.now();
-function tickerFrame(now){
-  const elapsed=now-tickerStart;
-  const dur=4200;
-  const p=Math.min(elapsed/dur,1);
-  const ease=1-Math.pow(1-p,3);
-  tickerEl.textContent=Math.round(ease*tickerTarget).toLocaleString();
-  if(p<1)requestAnimationFrame(tickerFrame);
-}
-requestAnimationFrame(tickerFrame);
+/* RECOVERED-LEAD STATIC (animation killed per Council 2026-05-20) */
+/* number rendered server-side in HTML, no JS needed */
 
 /* RESCUE CARD ROTATION (textContent only - no innerHTML) */
 const rescues=[
