@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Missed-Call Math Calculator for HVAC and Roofing Shops | Signal Works</title>
+<meta name="description" content="Free calculator. Plug in your call volume, miss rate, and ticket size. See how much revenue your HVAC or roofing shop is bleeding to unanswered calls."/>
+<meta property="og:title" content="Missed-Call Math Calculator | Signal Works"/>
+<meta property="og:description" content="Plug in your numbers. See your monthly leak and what is recoverable. HVAC and roofing shops, 4 to 10 trucks."/>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+<link rel="canonical" href="https://geolisted.co/missed-call-calculator"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#060810;
+  --ink2:#0E1320;
+  --surface:#111827;
+  --s2:#1a2235;
+  --signal:#00E5FF;
+  --sigD:#00B8CC;
+  --gold:#FFB830;
+  --red:#FF3B3B;
+  --green:#00E096;
+  --white:#F2EFE8;
+  --muted:rgba(242,239,232,.62);
+  --dim:rgba(242,239,232,.32);
+  --border:rgba(255,255,255,.07);
+  --fH:'Syne',sans-serif;
+  --fS:'DM Serif Display',serif;
+  --fM:'DM Mono',monospace;
+}
+html{background:var(--ink);scroll-behavior:smooth}
+body{font-family:var(--fH);background:var(--ink);color:var(--white);overflow-x:hidden;-webkit-font-smoothing:antialiased;cursor:none}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+button{font-family:inherit;cursor:none}
+input{font-family:inherit}
+
+/* CURSOR */
+#cur,#cur2{position:fixed;border-radius:50%;pointer-events:none;z-index:8999;top:0;left:0;transform:translate(-50%,-50%)}
+#cur{width:7px;height:7px;background:var(--signal);transition:width .15s,height .15s,background .15s}
+#cur2{width:34px;height:34px;border:1px solid rgba(0,229,255,.4);transition:width .25s cubic-bezier(.16,1,.3,1),height .25s cubic-bezier(.16,1,.3,1),border-color .2s}
+body.cL #cur{background:var(--gold);width:5px;height:5px}
+body.cL #cur2{width:54px;height:54px;border-color:var(--gold)}
+
+/* CANVAS */
+#bg{position:fixed;inset:0;z-index:0}
+
+/* GRAIN */
+#grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.025;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:160px}
+
+/* NAV (seamless, no border) */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:800;height:62px;
+  display:flex;align-items:center;justify-content:space-between;padding:0 6%;
+  background:rgba(6,8,16,.78);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+  opacity:0;transition:opacity .5s;
+}
+nav.vis{opacity:1}
+.logo{font-family:var(--fH);font-weight:800;font-size:17px;letter-spacing:-.02em;display:inline-flex;align-items:center;gap:10px}
+.logo em{font-style:normal;color:var(--signal)}
+.logo-mark{width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;color:var(--signal)}
+.btn-nav{padding:10px 22px;background:var(--signal);color:var(--ink);font-family:var(--fH);font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;border-radius:2px;transition:background .15s,transform .12s}
+.btn-nav:hover{background:var(--sigD);transform:translateY(-1px)}
+
+/* HERO with calculator inline */
+#hero{
+  position:relative;z-index:2;
+  width:100vw;min-height:100svh;
+  display:grid;grid-template-columns:1.2fr 1fr;
+  align-items:start;padding:108px 6% 64px;gap:56px;
+}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--fM);font-size:10px;letter-spacing:.2em;
+  color:var(--signal);text-transform:uppercase;
+  border:1px solid rgba(0,229,255,.2);padding:6px 14px;border-radius:2px;
+  margin-bottom:28px;
+}
+.eyebrow::before{content:'';width:5px;height:5px;background:var(--signal);border-radius:50%;animation:blink 1.8s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.2;transform:scale(.5)}}
+
+.h1{font-family:var(--fH);font-weight:800;font-size:clamp(38px,5.4vw,72px);line-height:.96;letter-spacing:-.04em;margin-bottom:24px;color:var(--white)}
+.h1 em{font-family:var(--fS);font-style:italic;font-weight:400;color:var(--signal);letter-spacing:-.02em}
+.h1 .br{display:block}
+.sub{font-size:clamp(15px,1.35vw,18px);color:rgba(242,239,232,.78);line-height:1.7;max-width:52ch;margin-bottom:36px}
+.sub strong{color:var(--white);font-weight:600}
+
+/* CALCULATOR INPUTS */
+.calc-form{display:flex;flex-direction:column;gap:22px;max-width:540px}
+.calc-row{display:flex;flex-direction:column;gap:10px}
+.calc-label{font-family:var(--fM);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--signal);display:flex;align-items:center;gap:10px}
+.calc-label .lhint{font-family:var(--fH);font-weight:500;font-size:11px;letter-spacing:.01em;text-transform:none;color:var(--dim);margin-left:auto}
+.calc-input{
+  width:100%;padding:18px 22px;
+  background:rgba(255,255,255,.025);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:3px;
+  font-family:var(--fH);font-weight:700;font-size:clamp(20px,2.2vw,26px);letter-spacing:-.01em;
+  color:var(--white);outline:none;
+  transition:border-color .2s,background .2s;
+  -moz-appearance:textfield;
+}
+.calc-input::-webkit-outer-spin-button,.calc-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.calc-input:focus{border-color:var(--signal);background:rgba(0,229,255,.035)}
+.calc-input::placeholder{color:var(--dim)}
+.calc-prefix-wrap{position:relative}
+.calc-prefix-wrap::before{
+  content:attr(data-prefix);position:absolute;left:22px;top:50%;transform:translateY(-50%);
+  font-family:var(--fH);font-weight:600;font-size:clamp(20px,2.2vw,26px);color:var(--dim);pointer-events:none;
+}
+.calc-prefix-wrap input{padding-left:42px}
+.calc-suffix-wrap{position:relative}
+.calc-suffix-wrap::after{
+  content:attr(data-suffix);position:absolute;right:22px;top:50%;transform:translateY(-50%);
+  font-family:var(--fM);font-weight:500;font-size:13px;color:var(--dim);letter-spacing:.04em;pointer-events:none;
+}
+.calc-suffix-wrap input{padding-right:48px}
+
+/* TICKET PRESET CHIPS */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.chip{
+  padding:9px 16px;background:rgba(255,255,255,.025);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:2px;
+  font-family:var(--fM);font-size:11px;letter-spacing:.04em;color:var(--muted);
+  transition:border-color .2s,color .2s,background .2s;
+}
+.chip:hover{border-color:rgba(0,229,255,.3);color:var(--white)}
+.chip.on{border-color:var(--signal);background:rgba(0,229,255,.08);color:var(--signal)}
+
+.calc-hint{font-family:var(--fM);font-size:11px;color:var(--dim);line-height:1.55;letter-spacing:.02em;margin-top:-2px}
+.calc-hint strong{color:var(--muted);font-weight:500}
+
+/* RESULT CARD - sticky on desktop */
+.result-rail{position:sticky;top:88px;align-self:start;width:100%;max-width:440px;justify-self:end;display:flex;flex-direction:column;gap:14px}
+
+.result-card{
+  background:rgba(255,255,255,.035);
+  border:1px solid rgba(0,229,255,.22);
+  border-radius:14px;padding:30px 30px 26px;
+  position:relative;overflow:hidden;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+}
+.result-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,229,255,.08) 0%,transparent 55%);pointer-events:none}
+
+.result-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;position:relative}
+.result-label{font-family:var(--fM);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);display:inline-flex;align-items:center;gap:8px}
+.result-label::before{content:'';width:6px;height:6px;background:var(--signal);border-radius:50%;box-shadow:0 0 0 0 rgba(0,229,255,.55);animation:pulse-s 1.8s ease-out infinite}
+@keyframes pulse-s{0%{box-shadow:0 0 0 0 rgba(0,229,255,.55)}100%{box-shadow:0 0 0 12px rgba(0,229,255,0)}}
+.result-tag{font-family:var(--fM);font-size:10px;color:var(--dim);letter-spacing:.04em}
+
+.result-num{
+  font-family:var(--fH);font-weight:800;
+  font-size:clamp(46px,7vw,76px);letter-spacing:-.045em;line-height:.95;
+  color:var(--white);
+  display:flex;align-items:flex-start;gap:2px;
+  margin-bottom:8px;position:relative;
+}
+.result-dollar{font-size:.45em;margin-top:.32em;color:var(--signal);opacity:.85;font-weight:700}
+#resMonthly{color:var(--signal)}
+.result-cap{font-family:var(--fH);font-weight:500;font-size:13px;color:var(--muted);line-height:1.55;margin-bottom:22px}
+.result-cap strong{color:var(--white);font-weight:600}
+
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding-top:18px;border-top:1px solid rgba(255,255,255,.06)}
+.result-cell{display:flex;flex-direction:column;gap:6px}
+.result-cell-label{font-family:var(--fM);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+.result-cell-val{font-family:var(--fH);font-weight:700;font-size:clamp(20px,2vw,24px);letter-spacing:-.02em;color:var(--white)}
+.result-cell-val small{font-size:.6em;color:var(--signal);opacity:.85;font-weight:700;margin-right:1px;vertical-align:.18em}
+.result-cell-foot{font-family:var(--fM);font-size:10px;color:var(--dim);letter-spacing:.04em;line-height:1.4}
+
+.caveat-block{
+  padding:16px 20px;
+  border-radius:10px;
+  background:rgba(0,229,255,.035);
+  border:1px solid rgba(0,229,255,.1);
+  font-family:var(--fM);font-size:11px;color:var(--muted);line-height:1.6;letter-spacing:.01em;
+}
+.caveat-block strong{color:var(--white);font-weight:500}
+
+/* SECTIONS */
+.sec{padding:96px 6%;max-width:1280px;margin:0 auto;position:relative;z-index:2}
+.slabel{font-family:var(--fM);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--signal);margin-bottom:14px}
+.sh{font-family:var(--fH);font-weight:800;font-size:clamp(32px,4.5vw,58px);letter-spacing:-.03em;line-height:1.05;margin-bottom:52px;color:var(--white);max-width:22ch}
+.sh em{font-family:var(--fS);font-style:italic;font-weight:400;color:var(--signal)}
+
+/* MATH BREAKDOWN TABLE */
+.math-wrap{max-width:880px}
+.math-row{
+  display:grid;grid-template-columns:40px 1fr auto;gap:18px;align-items:center;
+  padding:22px 26px;
+  background:var(--surface);
+  margin-bottom:2px;
+  transition:background .25s;
+}
+.math-row:first-of-type{border-radius:3px 3px 0 0}
+.math-row:last-of-type{border-radius:0 0 3px 3px}
+.math-row:hover{background:var(--s2)}
+.math-row.final{background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.18);margin-top:6px;border-radius:3px;padding:28px 26px}
+.math-row.final:hover{background:rgba(0,229,255,.09)}
+.math-step{font-family:var(--fM);font-size:11px;letter-spacing:.12em;color:var(--signal);text-transform:uppercase}
+.math-row.final .math-step{color:var(--signal)}
+.math-formula{font-family:var(--fH);font-weight:500;font-size:15px;color:var(--white);line-height:1.45}
+.math-formula em{font-family:var(--fS);font-style:italic;color:var(--signal);font-weight:400}
+.math-formula .ftiny{font-family:var(--fM);font-size:11px;color:var(--dim);display:block;margin-top:4px;letter-spacing:.04em}
+.math-val{font-family:var(--fH);font-weight:700;font-size:clamp(20px,2vw,26px);color:var(--white);letter-spacing:-.02em;white-space:nowrap}
+.math-val small{font-size:.62em;color:var(--signal);opacity:.85;font-weight:700;margin-right:1px;vertical-align:.16em}
+.math-row.final .math-val{color:var(--signal);font-size:clamp(24px,2.4vw,32px)}
+
+/* DO-ABOUT-IT CARDS */
+.do-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;border:1px solid var(--border);border-radius:3px;overflow:hidden;background:var(--border)}
+.do-card{background:var(--surface);padding:36px 32px;display:flex;flex-direction:column;gap:18px;min-height:380px;position:relative;transition:background .25s}
+.do-card:hover{background:var(--s2)}
+.do-tag{font-family:var(--fM);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);display:inline-flex;align-items:center;gap:8px}
+.do-tag .tdot{width:6px;height:6px;border-radius:50%}
+.do-card.diy .tdot{background:var(--green)}
+.do-card.svc .tdot{background:var(--signal)}
+.do-card.cta-card .tdot{background:var(--gold)}
+.do-card.diy .do-tag{color:var(--green)}
+.do-card.svc .do-tag{color:var(--signal)}
+.do-card.cta-card .do-tag{color:var(--gold)}
+.do-title{font-family:var(--fH);font-weight:700;font-size:clamp(20px,2.2vw,26px);letter-spacing:-.02em;line-height:1.15;color:var(--white)}
+.do-price{font-family:var(--fM);font-size:11px;color:var(--muted);letter-spacing:.04em;margin-top:-8px}
+.do-price strong{color:var(--white);font-weight:500}
+.do-list{display:flex;flex-direction:column;gap:12px;margin-top:4px}
+.do-item{display:flex;gap:11px;align-items:flex-start;font-size:14px;color:var(--muted);line-height:1.55}
+.do-item .doico{flex-shrink:0;margin-top:3px;color:var(--signal)}
+.do-card.diy .do-item .doico{color:var(--green)}
+.do-card.cta-card .do-item .doico{color:var(--gold)}
+.do-item strong{color:var(--white);font-weight:600}
+.do-cta{margin-top:auto;padding:14px 22px;background:transparent;border:1px solid rgba(255,255,255,.18);border-radius:2px;font-family:var(--fH);font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--white);text-align:center;display:inline-flex;justify-content:center;align-items:center;gap:8px;transition:border-color .2s,background .2s,color .2s}
+.do-cta:hover{border-color:var(--signal);color:var(--signal)}
+.do-card.cta-card .do-cta{background:var(--signal);border-color:var(--signal);color:var(--ink)}
+.do-card.cta-card .do-cta:hover{background:var(--sigD);border-color:var(--sigD);color:var(--ink)}
+
+/* FIT STRIPE */
+.fit-stripe{
+  position:relative;z-index:2;
+  padding:54px 6%;text-align:center;background:var(--ink2);
+}
+.fit-inner{max-width:780px;margin:0 auto;display:flex;flex-direction:column;gap:14px;align-items:center}
+.fit-eyebrow{font-family:var(--fM);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);display:inline-flex;align-items:center;gap:8px}
+.fit-eyebrow::before{content:'';width:6px;height:6px;background:var(--gold);border-radius:50%}
+.fit-text{font-family:var(--fH);font-weight:600;font-size:clamp(18px,2.2vw,24px);line-height:1.4;color:var(--white);max-width:60ch;letter-spacing:-.01em}
+.fit-text em{font-family:var(--fS);font-style:italic;font-weight:400;color:var(--signal)}
+.fit-link{font-family:var(--fM);font-size:12px;letter-spacing:.06em;color:var(--signal);display:inline-flex;align-items:center;gap:8px;transition:gap .2s}
+.fit-link:hover{gap:14px}
+
+/* FOOTER */
+footer{padding:38px 6%;display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:center;position:relative;z-index:2;background:var(--ink)}
+footer::before{content:'';position:absolute;top:0;left:6%;right:6%;height:1px;background:linear-gradient(90deg,transparent,rgba(0,229,255,.18),transparent)}
+.flogo{font-family:var(--fH);font-weight:800;font-size:15px}
+.flogo em{font-style:normal;color:var(--signal)}
+footer p{font-size:12px;color:var(--dim);line-height:1.6}
+footer a{color:var(--muted);transition:color .2s}
+footer a:hover{color:var(--signal)}
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+  #hero{grid-template-columns:1fr;padding:108px 6% 56px;gap:40px}
+  .result-rail{position:static;justify-self:stretch;max-width:none}
+  .do-grid{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  body{cursor:auto}
+  #cur,#cur2{display:none}
+  .sec{padding:72px 6%}
+  .h1{font-size:clamp(32px,9vw,52px)}
+  .sh{font-size:clamp(26px,7vw,40px)}
+  .math-row{grid-template-columns:1fr;gap:8px;padding:18px 20px;text-align:left}
+  .math-val{align-self:flex-end;font-size:22px}
+  .math-row.final{padding:22px 20px}
+  .result-card{padding:24px 22px 20px}
+  .result-grid{gap:10px}
+  .do-card{padding:28px 24px;min-height:auto}
+  footer{flex-direction:column;align-items:flex-start;gap:18px}
+}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur2"></div>
+<div id="grain"></div>
+<canvas id="bg"></canvas>
+
+<nav id="main-nav">
+  <a href="index.html" class="logo">
+    <span class="logo-mark" aria-hidden="true">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h3l3-9 4 18 3-9h7"/></svg>
+    </span>
+    Signal<em>.</em>Works
+  </a>
+  <a href="https://calendly.com/boubacarbarry/signal-works-discovery-call" class="btn-nav" target="_blank" rel="noopener">Book a call</a>
+</nav>
+
+<!-- HERO + CALCULATOR -->
+<section id="hero">
+  <div class="hero-left">
+    <div class="eyebrow">Missed-Call Math / HVAC + Roofing</div>
+    <h1 class="h1">
+      <span class="br">How much revenue is</span>
+      <span class="br">your shop <em>bleeding</em></span>
+      <span class="br">to missed calls?</span>
+    </h1>
+    <p class="sub">Plug in three numbers from your phone log and your last invoice batch. The card on the right updates as you type. <strong>No email gate. No download.</strong> Just the math.</p>
+
+    <form class="calc-form" id="calcForm" autocomplete="off" onsubmit="return false">
+      <div class="calc-row">
+        <label class="calc-label" for="inCalls">
+          <span>01 / Monthly inbound calls</span>
+          <span class="lhint">From your phone log</span>
+        </label>
+        <input class="calc-input" type="number" id="inCalls" min="0" step="10" value="200" inputmode="numeric" aria-label="Monthly inbound call volume"/>
+        <p class="calc-hint">Total inbound, not just answered. Pull last 30 days from your VOIP, GMB call history, or LSA dashboard.</p>
+      </div>
+
+      <div class="calc-row">
+        <label class="calc-label" for="inMiss">
+          <span>02 / Miss rate</span>
+          <span class="lhint">Industry avg 30 to 40 percent</span>
+        </label>
+        <div class="calc-suffix-wrap" data-suffix="%">
+          <input class="calc-input" type="number" id="inMiss" min="0" max="100" step="1" value="30" inputmode="numeric" aria-label="Miss rate percentage"/>
+        </div>
+        <p class="calc-hint">If you do not know, <strong>start at 30</strong>. The Invoca + Service Direct 2024 benchmark for HVAC and roofing.</p>
+      </div>
+
+      <div class="calc-row">
+        <label class="calc-label" for="inTicket">
+          <span>03 / Average ticket size</span>
+          <span class="lhint">Pull from last 30 invoices</span>
+        </label>
+        <div class="calc-prefix-wrap" data-prefix="$">
+          <input class="calc-input" type="number" id="inTicket" min="0" step="50" value="850" inputmode="numeric" aria-label="Average ticket size in dollars"/>
+        </div>
+        <div class="chips" role="group" aria-label="Ticket size presets">
+          <button type="button" class="chip" data-ticket="300">$300 service call</button>
+          <button type="button" class="chip on" data-ticket="850">$850 repair</button>
+          <button type="button" class="chip" data-ticket="1500">$1,500 install</button>
+          <button type="button" class="chip" data-ticket="3500">$3,500 roof</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <aside class="result-rail" aria-label="Live calculation result">
+    <article class="result-card">
+      <div class="result-head">
+        <div class="result-label">Recoverable / month</div>
+        <div class="result-tag">Updated live</div>
+      </div>
+      <div class="result-num" aria-live="polite"><span class="result-dollar">$</span><span id="resMonthly">25,500</span></div>
+      <p class="result-cap"><strong>What is recoverable at 50% recovery rate.</strong> Half of your worst-case leak, recovered with phone rescue and same-day callback.</p>
+      <div class="result-grid">
+        <div class="result-cell">
+          <div class="result-cell-label">Worst-case leak / month</div>
+          <div class="result-cell-val"><small>$</small><span id="resRec">51,000</span></div>
+          <div class="result-cell-foot">If you change nothing</div>
+        </div>
+        <div class="result-cell">
+          <div class="result-cell-label">Recoverable / year</div>
+          <div class="result-cell-val"><small>$</small><span id="resYear">306,000</span></div>
+          <div class="result-cell-foot">12 months at that rate</div>
+        </div>
+        <div class="result-cell">
+          <div class="result-cell-label">Missed calls / month</div>
+          <div class="result-cell-val"><span id="resMissed">60</span></div>
+          <div class="result-cell-foot">Leads walking to a competitor</div>
+        </div>
+        <div class="result-cell">
+          <div class="result-cell-label">Compound / 5 years</div>
+          <div class="result-cell-val"><small>$</small><span id="resFive">1,530,000</span></div>
+          <div class="result-cell-foot">Flat assumption, no growth</div>
+        </div>
+      </div>
+    </article>
+    <div class="caveat-block">
+      <strong>Your number is real if you do nothing.</strong> Half of it is recoverable. Not all of it. Whoever sells you 100 percent recovery is lying.
+    </div>
+  </aside>
+</section>
+
+<!-- HOW THE MATH WORKS -->
+<section class="sec" id="math">
+  <p class="slabel">How the math works</p>
+  <h2 class="sh">No black box. <em>Here is every step.</em></h2>
+  <div class="math-wrap">
+    <div class="math-row">
+      <div class="math-step">A</div>
+      <div class="math-formula">Inbound calls per month <em>x</em> miss rate <span class="ftiny" id="mfA">200 calls x 30%</span></div>
+      <div class="math-val" id="mvA">60</div>
+    </div>
+    <div class="math-row">
+      <div class="math-step">B</div>
+      <div class="math-formula">Missed calls <em>x</em> average ticket = worst-case leak <span class="ftiny" id="mfB">60 missed x $850</span></div>
+      <div class="math-val"><small>$</small><span id="mvB">51,000</span></div>
+    </div>
+    <div class="math-row">
+      <div class="math-step">C</div>
+      <div class="math-formula">Leak <em>x</em> 50 percent recovery target <span class="ftiny">Industry-typical with phone rescue + same-day callback</span></div>
+      <div class="math-val"><small>$</small><span id="mvC">25,500</span></div>
+    </div>
+    <div class="math-row final">
+      <div class="math-step">D</div>
+      <div class="math-formula">Recoverable revenue per month <span class="ftiny">x 12 = annualized recovery</span></div>
+      <div class="math-val"><small>$</small><span id="mvD">12,750</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT TO DO ABOUT IT -->
+<section class="sec" id="do">
+  <p class="slabel">What to do about it</p>
+  <h2 class="sh">Three options. <em>Pick one.</em></h2>
+  <div class="do-grid">
+
+    <article class="do-card diy">
+      <div class="do-tag"><span class="tdot"></span>Free / This week</div>
+      <h3 class="do-title">Do it yourself</h3>
+      <p class="do-price"><strong>Cost: $0.</strong> Time: 2 to 4 hours this week.</p>
+      <div class="do-list">
+        <div class="do-item">
+          <span class="doico" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span>Add an <strong>answering service</strong> or call-overflow forwarding for after-5pm and lunch hours. $80 to $200 per month.</span>
+        </div>
+        <div class="do-item">
+          <span class="doico" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span>Turn on <strong>voicemail-to-SMS transcription</strong> so missed-call voicemails hit your phone as text within 60 seconds.</span>
+        </div>
+        <div class="do-item">
+          <span class="doico" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span>Set a <strong>15-minute callback SLA</strong> with your CSR. Print it. Tape it to the phone.</span>
+        </div>
+        <div class="do-item">
+          <span class="doico" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span>Audit your <strong>after-hours forwarding</strong> in Google Voice or your VOIP. Most shops never set it.</span>
+        </div>
+      </div>
+      <a href="mailto:boubacar@catalystworks.consulting?subject=DIY%20missed-call%20setup%20questions" class="do-cta">Email me your DIY questions</a>
+    </article>
+
+    <article class="do-card svc">
+      <div class="do-tag"><span class="tdot"></span>Done for you</div>
+      <h3 class="do-title">Lead Rescue OS</h3>
+      <p class="do-price"><strong>$6,000 setup + $1,500/mo.</strong> Founding cohort price. 3 spots.</p>
+      <div class="do-list">
+        <div class="do-item">
+          <span class="doico" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span><strong>AI voice agent</strong> answers every missed call in 2 rings, qualifies the lead, books a callback window.</span>
+        </div>
+        <div class="do-item">
+          <span class="doico" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span><strong>Dispatch routing</strong> into ServiceTitan, Housecall Pro, or Jobber, tagged AI-rescued.</span>
+        </div>
+        <div class="do-item">
+          <span class="doico" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span><strong>SMS reminders</strong> to caller + tech 15 minutes before the callback window.</span>
+        </div>
+        <div class="do-item">
+          <span class="doico" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span><strong>Monthly recovery report.</strong> 30 recovered leads in 30 days or I work month 2 free.</span>
+        </div>
+      </div>
+      <a href="lead-rescue-os.html" class="do-cta">See the full system</a>
+    </article>
+
+    <article class="do-card cta-card">
+      <div class="do-tag"><span class="tdot"></span>Book the call</div>
+      <h3 class="do-title">30 minutes with Boubacar</h3>
+      <p class="do-price"><strong>No fee. No pitch.</strong> Clear next step on the call.</p>
+      <div class="do-list">
+        <div class="do-item">
+          <span class="doico" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span>We pull your <strong>actual call log</strong> together, not the industry average.</span>
+        </div>
+        <div class="do-item">
+          <span class="doico" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span>If the math <strong>does not work</strong> for your shop, I tell you on the call.</span>
+        </div>
+        <div class="do-item">
+          <span class="doico" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span>If it does, we scope the <strong>30-day recovery plan</strong> on the same call.</span>
+        </div>
+        <div class="do-item">
+          <span class="doico" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span>Or text me: <strong>+1 801-888-1963</strong>.</span>
+        </div>
+      </div>
+      <a href="https://calendly.com/boubacarbarry/signal-works-discovery-call" class="do-cta" target="_blank" rel="noopener">
+        Book a free strategy call
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </article>
+
+  </div>
+</section>
+
+<!-- FIT STRIPE -->
+<section class="fit-stripe">
+  <div class="fit-inner">
+    <div class="fit-eyebrow">Honest fit check</div>
+    <p class="fit-text">Built for <strong>HVAC and roofing shops, 4 to 10 trucks, $500K to $3M annual revenue</strong>. Pre-revenue founding cohort. <em>3 spots open.</em></p>
+    <a href="lead-rescue-os.html" class="fit-link">
+      Read the full Lead Rescue OS page
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </a>
+  </div>
+</section>
+
+<footer>
+  <div>
+    <div class="flogo">Signal<em>.</em>Works</div>
+    <p>Productized arm of Catalyst Works Consulting.<br/>Boubacar, operator.</p>
+  </div>
+  <div style="text-align:right">
+    <p><a href="mailto:boubacar@catalystworks.consulting">boubacar@catalystworks.consulting</a></p>
+    <p>&copy; 2026 Signal Works.</p>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+/* CANVAS SIGNAL WAVES (same substrate as lead-rescue-os.html) */
+const cv=document.getElementById('bg');
+const ctx=cv.getContext('2d');
+let W,H;
+function resize(){W=cv.width=innerWidth;H=cv.height=innerHeight}
+addEventListener('resize',resize);resize();
+const WAVES=[];
+function spawnWave(x,y,col){WAVES.push({x,y,r:0,maxR:Math.max(W,H)*.85,a:.35,col:col||'0,229,255',speed:1.6+Math.random()})}
+spawnWave(W*.78,H*.42);spawnWave(W*.78,H*.42);spawnWave(W*.78,H*.42);
+setInterval(()=>spawnWave(W*.78,H*.42),2400);
+const PARTS=[];
+for(let i=0;i<55;i++)PARTS.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.22,vy:(Math.random()-.5)*.22,r:.7+Math.random()*1.3,a:.07+Math.random()*.22,c:Math.random()>.82?'255,184,48':'0,229,255',p:Math.random()*Math.PI*2,ps:.008+Math.random()*.012});
+function draw(){
+  requestAnimationFrame(draw);
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#060810';ctx.fillRect(0,0,W,H);
+  const rg=ctx.createRadialGradient(W*.78,H*.42,0,W*.78,H*.42,W*.55);
+  rg.addColorStop(0,'rgba(0,229,255,.07)');rg.addColorStop(.4,'rgba(0,229,255,.02)');rg.addColorStop(1,'transparent');
+  ctx.fillStyle=rg;ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='rgba(0,229,255,.022)';ctx.lineWidth=1;
+  for(let x=0;x<W;x+=52){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke()}
+  for(let y=0;y<H;y+=52){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}
+  for(let i=WAVES.length-1;i>=0;i--){
+    const w=WAVES[i];w.r+=w.speed;w.a=.35*(1-w.r/w.maxR);
+    if(w.a<=0.004){WAVES.splice(i,1);continue}
+    ctx.beginPath();ctx.arc(w.x,w.y,w.r,0,Math.PI*2);
+    ctx.strokeStyle='rgba('+w.col+','+w.a.toFixed(3)+')';ctx.lineWidth=1.5;ctx.stroke();
+  }
+  for(const p of PARTS){
+    p.x+=p.vx;p.y+=p.vy;p.p+=p.ps;
+    if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+    const a=p.a*(.5+.5*Math.sin(p.p));
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba('+p.c+','+a+')';ctx.fill();
+  }
+  ctx.lineWidth=.5;
+  for(let i=0;i<PARTS.length;i++)for(let j=i+1;j<PARTS.length;j++){
+    const dx=PARTS[i].x-PARTS[j].x,dy=PARTS[i].y-PARTS[j].y,d=Math.sqrt(dx*dx+dy*dy);
+    if(d<100){ctx.strokeStyle='rgba(0,229,255,'+(.12*(1-d/100)).toFixed(3)+')';ctx.beginPath();ctx.moveTo(PARTS[i].x,PARTS[i].y);ctx.lineTo(PARTS[j].x,PARTS[j].y);ctx.stroke()}
+  }
+  const vg=ctx.createLinearGradient(0,0,W*.6,0);
+  vg.addColorStop(0,'rgba(6,8,16,.78)');vg.addColorStop(.4,'rgba(6,8,16,.38)');vg.addColorStop(1,'rgba(6,8,16,.04)');
+  ctx.fillStyle=vg;ctx.fillRect(0,0,W,H);
+}
+draw();
+
+/* CURSOR */
+const Cur=document.getElementById('cur'),Cur2=document.getElementById('cur2');
+let mx=W/2,my=H/2,rx=mx,ry=my;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+(function cl(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;Cur.style.cssText='left:'+mx+'px;top:'+my+'px';Cur2.style.cssText='left:'+rx+'px;top:'+ry+'px';requestAnimationFrame(cl)})();
+document.querySelectorAll('a,button,input,.chip').forEach(el=>{el.addEventListener('mouseenter',()=>document.body.classList.add('cL'));el.addEventListener('mouseleave',()=>document.body.classList.remove('cL'))});
+
+/* NAV REVEAL */
+window.addEventListener('load',()=>{document.getElementById('main-nav').classList.add('vis')});
+
+/* CALCULATOR - live updates, textContent only, no innerHTML */
+const inCalls=document.getElementById('inCalls');
+const inMiss=document.getElementById('inMiss');
+const inTicket=document.getElementById('inTicket');
+
+const resMonthly=document.getElementById('resMonthly');
+const resRec=document.getElementById('resRec');
+const resYear=document.getElementById('resYear');
+const resMissed=document.getElementById('resMissed');
+const resFive=document.getElementById('resFive');
+
+const mvA=document.getElementById('mvA');
+const mvB=document.getElementById('mvB');
+const mvC=document.getElementById('mvC');
+const mvD=document.getElementById('mvD');
+const mfA=document.getElementById('mfA');
+const mfB=document.getElementById('mfB');
+
+const fmt=(n)=>Math.round(n).toLocaleString('en-US');
+const clamp=(n,lo,hi)=>Math.max(lo,Math.min(hi,n));
+
+function calc(){
+  const calls=clamp(parseFloat(inCalls.value)||0,0,1e6);
+  const miss=clamp(parseFloat(inMiss.value)||0,0,100);
+  const ticket=clamp(parseFloat(inTicket.value)||0,0,1e6);
+
+  const missedCalls=calls*(miss/100);
+  const monthlyLeak=missedCalls*ticket;
+  const monthlyRecoverable=monthlyLeak*0.5;
+  const annualRecoverable=monthlyRecoverable*12;
+  const fiveYearRecoverable=annualRecoverable*5;
+
+  // headline = monthly recoverable (the 50% recovery number)
+  // secondary cells: worst-case leak, annual recoverable, missed calls, 5yr compound
+  resMonthly.textContent=fmt(monthlyRecoverable);
+  resRec.textContent=fmt(monthlyLeak);
+  resYear.textContent=fmt(annualRecoverable);
+  resMissed.textContent=fmt(missedCalls);
+  resFive.textContent=fmt(fiveYearRecoverable);
+
+  // math breakdown
+  mvA.textContent=fmt(missedCalls);
+  mvB.textContent=fmt(monthlyLeak);
+  mvC.textContent=fmt(monthlyRecoverable);
+  mvD.textContent=fmt(monthlyRecoverable);
+
+  mfA.textContent=fmt(calls)+' calls x '+miss+'%';
+  mfB.textContent=fmt(missedCalls)+' missed x $'+fmt(ticket);
+}
+
+['input','change'].forEach(ev=>{
+  inCalls.addEventListener(ev,calc);
+  inMiss.addEventListener(ev,calc);
+  inTicket.addEventListener(ev,calc);
+});
+
+/* TICKET CHIP PRESETS */
+document.querySelectorAll('.chip[data-ticket]').forEach(c=>{
+  c.addEventListener('click',()=>{
+    const v=c.getAttribute('data-ticket');
+    inTicket.value=v;
+    document.querySelectorAll('.chip[data-ticket]').forEach(x=>x.classList.remove('on'));
+    c.classList.add('on');
+    calc();
+  });
+});
+// when user types a custom ticket, clear chip selection
+inTicket.addEventListener('input',()=>{
+  const v=String(parseFloat(inTicket.value)||0);
+  let matched=false;
+  document.querySelectorAll('.chip[data-ticket]').forEach(c=>{
+    if(c.getAttribute('data-ticket')===v){c.classList.add('on');matched=true}
+    else c.classList.remove('on');
+  });
+});
+
+// initial calc to lock defaults
+calc();
+
+/* SCROLL REVEALS - fromTo, default-visible safe */
+gsap.utils.toArray('.math-row').forEach((r,i)=>{
+  gsap.fromTo(r,{opacity:.35,y:18},{opacity:1,y:0,duration:.55,ease:'power2.out',scrollTrigger:{trigger:r,start:'top 90%',once:true},delay:i*.07});
+});
+gsap.utils.toArray('.do-card').forEach((d,i)=>{
+  gsap.fromTo(d,{opacity:.35,y:22},{opacity:1,y:0,duration:.6,ease:'power2.out',scrollTrigger:{trigger:d,start:'top 88%',once:true},delay:i*.08});
+});
+gsap.fromTo('.fit-inner',{opacity:.35,y:18},{opacity:1,y:0,duration:.6,ease:'power2.out',scrollTrigger:{trigger:'.fit-stripe',start:'top 90%',once:true}});
+</script>
+</body>
+</html>
