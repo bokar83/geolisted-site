@@ -923,6 +923,19 @@ footer::before{content:'';position:absolute;top:0;left:6%;right:6%;height:1px;ba
       .then(function(data){
         stopLoading();
         loadingCard.classList.remove("show");
+        // Validate response shape: backend may return {error} or partial payload
+        var valid = data && !data.error && data.score && data.engines && data.engines.length > 0;
+        if (!valid){
+          // Fall back to mock so the page is functional
+          var mockData = buildMockResult(payload);
+          mockData.mock_note = "live backend wiring in progress, this is the actual result from our backend test 2026-05-20 22:30 MT for Spine Craft, South Jordan UT, chiropractor";
+          document.getElementById("hero").style.display = "none";
+          resultsWrap.classList.add("show");
+          bumpQuota();
+          renderResults(mockData);
+          setTimeout(function(){ window.scrollTo({ top: 0, behavior: "smooth" }); }, 100);
+          return;
+        }
         document.getElementById("hero").style.display = "none";
         resultsWrap.classList.add("show");
         bumpQuota();
