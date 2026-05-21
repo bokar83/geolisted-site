@@ -340,7 +340,7 @@ footer::before{content:'';position:absolute;top:0;left:6%;right:6%;height:1px;ba
   <div class="hero-left">
     <div class="eyebrow">AI Visibility Scan</div>
     <h1 class="h1">See where your business shows up when locals ask AI for a <em>recommendation.</em></h1>
-    <p class="sub">We ask <strong>ChatGPT, Claude, Perplexity, and Google Gemini</strong> six real customer questions about your niche in your city. You see exactly who gets named in your place.</p>
+    <p class="sub">We ask <strong>ChatGPT, Claude, Perplexity, and Google Gemini</strong> six real customer questions about your type of business in your city. You see exactly who gets named in your place.</p>
     <p class="sub" style="font-size:14px;color:var(--dim);max-width:48ch">Built by Signal Works for local service businesses watching customers vanish into AI search. No login. Raw answers shown. Re-runnable.</p>
   </div>
 
@@ -366,23 +366,26 @@ footer::before{content:'';position:absolute;top:0;left:6%;right:6%;height:1px;ba
           </div>
 
           <div class="field">
-            <label for="niche">Niche</label>
+            <label for="niche">Business type</label>
             <select id="niche" name="niche" required>
               <option value="">Choose</option>
               <option value="chiropractor">Chiropractor</option>
               <option value="dentist">Dentist</option>
+              <option value="plumber">Plumber</option>
+              <option value="electrician">Electrician</option>
               <option value="hvac">HVAC</option>
               <option value="roofer">Roofer</option>
-              <option value="personal_injury_attorney">Personal Injury Attorney</option>
+              <option value="med_spa">Med spa / aesthetics</option>
+              <option value="personal_injury_attorney">Personal injury attorney</option>
               <option value="other">Other</option>
             </select>
-            <div class="field-error">Pick a niche.</div>
+            <div class="field-error">Pick your business type.</div>
           </div>
         </div>
 
         <div class="field field-other" id="otherWrap">
-          <label for="nicheOther">Tell us your niche</label>
-          <input type="text" id="nicheOther" name="niche_other" placeholder="Electrician, med spa, family law, etc." maxlength="120"/>
+          <label for="nicheOther">Tell us your business type</label>
+          <input type="text" id="nicheOther" name="niche_other" placeholder="Real estate agent, mechanic, salon, family lawyer, etc." maxlength="120"/>
         </div>
 
         <div class="field">
@@ -489,7 +492,7 @@ footer::before{content:'';position:absolute;top:0;left:6%;right:6%;height:1px;ba
     </button>
     <div class="faq-a">
       <p><strong>0 to 25%:</strong> AI engines do not see you. Customers asking AI for your service in your city never hear your name.</p>
-      <p><strong>25 to 50%:</strong> Occasional. You show up on niche-specific queries (e.g., "sports chiropractor near me") but not the high-volume "best [niche]" searches.</p>
+      <p><strong>25 to 50%:</strong> Occasional. You show up on specific-service queries (e.g., "sports chiropractor near me") but not the high-volume "best [business type]" searches.</p>
       <p><strong>50 to 75%:</strong> Regular. AI engines reliably name you across most query variants.</p>
       <p><strong>75%+:</strong> Dominant. You are one of the named go-to options in your city.</p>
     </div>
