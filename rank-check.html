@@ -354,14 +354,14 @@ footer::before{content:'';position:absolute;top:0;left:6%;right:6%;height:1px;ba
       <form id="scanForm" autocomplete="on" novalidate>
         <div class="field">
           <label for="bizName">Business name</label>
-          <input type="text" id="bizName" name="business_name" placeholder="Acme Chiropractic" required maxlength="120"/>
+          <input type="text" id="bizName" name="business_name" placeholder="Acme AI" required maxlength="120"/>
           <div class="field-error">Business name is required.</div>
         </div>
 
         <div class="row-2">
           <div class="field">
             <label for="city">City</label>
-            <input type="text" id="city" name="city" placeholder="Salt Lake City, UT" required maxlength="120"/>
+            <input type="text" id="city" name="city" placeholder="Moab, UT" required maxlength="120"/>
             <div class="field-error">City is required.</div>
           </div>
 
@@ -688,7 +688,7 @@ footer::before{content:'';position:absolute;top:0;left:6%;right:6%;height:1px;ba
     var nc = (payload.niche === "other" ? (payload.niche_other || "service") : payload.niche) || "service";
     return {
       mocked: true,
-      mock_note: "live backend wiring in progress, this is the actual result from our backend test 2026-05-20 22:30 MT for Acme Chiropractic, Salt Lake City UT, chiropractor",
+      mock_note: "live backend wiring in progress, this is the actual result from our backend test 2026-05-20 22:30 MT for Acme AI, Moab UT, chiropractor",
       business: { name: bn, city: ct, niche: nc },
       score: { hits: 1, runs: 24, rate_pct: 4.2 },
       engines: [
@@ -928,7 +928,7 @@ footer::before{content:'';position:absolute;top:0;left:6%;right:6%;height:1px;ba
         if (!valid){
           // Fall back to mock so the page is functional
           var mockData = buildMockResult(payload);
-          mockData.mock_note = "live backend wiring in progress, this is the actual result from our backend test 2026-05-20 22:30 MT for Acme Chiropractic, Salt Lake City UT, chiropractor";
+          mockData.mock_note = "live backend wiring in progress, this is the actual result from our backend test 2026-05-20 22:30 MT for Acme AI, Moab UT, chiropractor";
           document.getElementById("hero").style.display = "none";
           resultsWrap.classList.add("show");
           bumpQuota();
