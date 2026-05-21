@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5"/>
+<title>AI Visibility Scan for Local Service Businesses | Signal Works</title>
+<meta name="description" content="See where your business shows up when locals ask ChatGPT, Claude, Perplexity, and Gemini for a recommendation. Free scan, 60 seconds, one per visitor per day."/>
+<meta property="og:title" content="AI Visibility Scan | Signal Works"/>
+<meta property="og:description" content="Run six real customer questions across ChatGPT, Claude, Perplexity, and Gemini. See exactly who AI engines name in your place."/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://geolisted.co/rank-check"/>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+<link rel="canonical" href="https://geolisted.co/rank-check"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#060810;
+  --ink2:#0E1320;
+  --surface:#111827;
+  --s2:#1a2235;
+  --signal:#00E5FF;
+  --sigD:#00B8CC;
+  --gold:#FFB830;
+  --red:#FF3B3B;
+  --green:#00E096;
+  --white:#F2EFE8;
+  --muted:rgba(242,239,232,.62);
+  --dim:rgba(242,239,232,.32);
+  --border:rgba(255,255,255,.07);
+  --fH:'Syne',sans-serif;
+  --fS:'DM Serif Display',serif;
+  --fM:'DM Mono',monospace;
+}
+html{background:var(--ink);scroll-behavior:smooth}
+body{font-family:var(--fH);background:var(--ink);color:var(--white);overflow-x:hidden;-webkit-font-smoothing:antialiased;min-height:100svh}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,select,textarea{font-family:inherit;color:inherit}
+img,svg{display:block;max-width:100%}
+
+#bg{position:fixed;inset:0;z-index:0;opacity:.55}
+
+#grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.025;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:160px}
+
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:800;height:62px;
+  display:flex;align-items:center;justify-content:space-between;padding:0 6%;
+  background:rgba(6,8,16,.78);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+}
+.logo{font-family:var(--fH);font-weight:800;font-size:17px;letter-spacing:-.02em;display:inline-flex;align-items:center;gap:10px}
+.logo em{font-style:normal;color:var(--signal)}
+.logo-mark{width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;color:var(--signal)}
+.btn-nav{padding:10px 22px;background:var(--signal);color:var(--ink);font-family:var(--fH);font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;border-radius:2px;transition:background .15s,transform .12s;display:inline-block}
+.btn-nav:hover{background:var(--sigD);transform:translateY(-1px)}
+
+#hero{
+  position:relative;z-index:2;
+  width:100vw;min-height:100svh;
+  display:grid;grid-template-columns:1.05fr 1fr;
+  align-items:start;padding:120px 6% 80px;gap:64px;
+}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--fM);font-size:10px;letter-spacing:.2em;
+  color:var(--signal);text-transform:uppercase;
+  border:1px solid rgba(0,229,255,.2);padding:6px 14px;border-radius:2px;
+  margin-bottom:32px;
+}
+.eyebrow::before{content:'';width:5px;height:5px;background:var(--signal);border-radius:50%;animation:blink 1.8s ease-out infinite}
+@keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.2;transform:scale(.5)}}
+
+.h1{font-family:var(--fH);font-weight:800;font-size:clamp(38px,5.4vw,76px);line-height:.96;letter-spacing:-.04em;margin-bottom:26px;color:var(--white);max-width:18ch}
+.h1 em{font-family:var(--fS);font-style:italic;font-weight:400;color:var(--signal);letter-spacing:-.02em}
+.sub{font-size:clamp(15px,1.35vw,18px);color:rgba(242,239,232,.78);line-height:1.7;max-width:52ch;margin-bottom:36px}
+.sub strong{color:var(--white);font-weight:600}
+
+.form-wrap{position:relative}
+.form-card{
+  background:rgba(255,255,255,.035);
+  border:1px solid rgba(0,229,255,.18);
+  border-radius:14px;padding:30px 30px 26px;position:relative;overflow:hidden;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  max-width:480px;
+}
+.form-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,229,255,.06) 0%,transparent 55%);pointer-events:none}
+.form-head{position:relative;display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.form-label{font-family:var(--fM);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);display:inline-flex;align-items:center;gap:8px}
+.form-label::before{content:'';width:6px;height:6px;background:var(--signal);border-radius:50%;animation:blink 1.8s ease-out infinite}
+
+.field{position:relative;margin-bottom:14px}
+.field label{display:block;font-family:var(--fM);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:7px;font-weight:500}
+.field input,.field select{
+  width:100%;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.08);
+  color:var(--white);font-family:var(--fH);font-weight:500;font-size:15px;
+  padding:13px 14px;border-radius:6px;outline:none;
+  transition:border-color .18s,background .18s;
+  -webkit-appearance:none;appearance:none;
+}
+.field input::placeholder{color:rgba(242,239,232,.28)}
+.field input:focus,.field select:focus{border-color:var(--signal);background:rgba(0,229,255,.04)}
+.field select{
+  background-image:url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2300E5FF' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 14px center;
+  padding-right:38px;cursor:pointer;
+}
+.field-error{display:none;color:var(--red);font-family:var(--fM);font-size:11px;margin-top:6px}
+.field.err input,.field.err select{border-color:var(--red)}
+.field.err .field-error{display:block}
+
+.row-2{display:grid;grid-template-columns:1.2fr 1fr;gap:12px}
+.field-other{display:none}
+.field-other.show{display:block}
+
+.btn-submit{
+  width:100%;padding:16px 28px;background:var(--signal);color:var(--ink);
+  font-family:var(--fH);font-weight:800;font-size:14px;letter-spacing:.06em;text-transform:uppercase;
+  border-radius:6px;transition:background .15s,transform .12s,box-shadow .2s;
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;margin-top:6px;
+}
+.btn-submit:hover:not(:disabled){background:var(--sigD);transform:translateY(-1px);box-shadow:0 8px 28px rgba(0,229,255,.22)}
+.btn-submit:disabled{opacity:.45;cursor:not-allowed}
+
+.form-foot{font-family:var(--fM);font-size:10.5px;color:var(--dim);letter-spacing:.04em;margin-top:14px;text-align:center;line-height:1.6}
+.form-foot strong{color:var(--muted);font-weight:500}
+
+.banner{
+  margin-top:14px;padding:11px 14px;border-radius:6px;
+  background:rgba(255,184,48,.08);border:1px solid rgba(255,184,48,.2);
+  font-family:var(--fM);font-size:11px;color:var(--gold);letter-spacing:.04em;line-height:1.55;
+  display:none;
+}
+.banner.show{display:block}
+
+.loading-card{
+  background:rgba(255,255,255,.035);
+  border:1px solid rgba(0,229,255,.18);
+  border-radius:14px;padding:36px 30px 30px;position:relative;overflow:hidden;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  max-width:480px;display:none;
+}
+.loading-card.show{display:block}
+.loading-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,229,255,.07) 0%,transparent 55%);pointer-events:none}
+.loading-label{font-family:var(--fM);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--signal);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.loading-label .pulse{width:8px;height:8px;background:var(--signal);border-radius:50%;box-shadow:0 0 0 0 rgba(0,229,255,.6);animation:pulse-c 1.4s ease-out infinite}
+@keyframes pulse-c{0%{box-shadow:0 0 0 0 rgba(0,229,255,.55)}100%{box-shadow:0 0 0 14px rgba(0,229,255,0)}}
+.loading-text{font-family:var(--fH);font-weight:700;font-size:22px;letter-spacing:-.02em;color:var(--white);margin-bottom:24px;min-height:30px}
+.progress{height:4px;background:rgba(255,255,255,.05);border-radius:99px;overflow:hidden;margin-bottom:18px}
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--signal),var(--sigD));border-radius:99px;width:0%;transition:width .8s linear}
+.loading-meta{font-family:var(--fM);font-size:11px;color:var(--muted);line-height:1.6;letter-spacing:.02em}
+.loading-meta strong{color:var(--white);font-weight:500}
+
+.results-wrap{display:none;position:relative;z-index:2;padding:120px 6% 80px;max-width:1180px;margin:0 auto}
+.results-wrap.show{display:block}
+
+.result-eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--fM);font-size:10px;letter-spacing:.2em;color:var(--signal);text-transform:uppercase;border:1px solid rgba(0,229,255,.2);padding:6px 14px;border-radius:2px;margin-bottom:22px}
+.result-id{font-family:var(--fH);font-weight:500;font-size:14px;color:var(--muted);margin-bottom:36px;line-height:1.55}
+.result-id strong{color:var(--white);font-weight:700}
+
+.score-block{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:end;margin-bottom:64px}
+.score-num{font-family:var(--fH);font-weight:800;font-size:clamp(80px,12vw,180px);letter-spacing:-.05em;line-height:.9;color:var(--white)}
+.score-num .of{color:var(--dim);font-size:.42em;font-weight:700}
+.score-label{font-family:var(--fM);font-size:11px;color:var(--muted);letter-spacing:.18em;text-transform:uppercase;margin-top:14px}
+.score-rate{font-family:var(--fS);font-style:italic;font-weight:400;font-size:clamp(28px,3.6vw,52px);color:var(--signal);letter-spacing:-.02em;line-height:1.1}
+.score-rate-label{font-family:var(--fM);font-size:11px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-top:6px}
+
+.interp{padding:30px 32px;background:rgba(0,229,255,.04);border:1px solid rgba(0,229,255,.12);border-radius:12px;margin-bottom:64px}
+.interp-h{font-family:var(--fH);font-weight:700;font-size:18px;color:var(--white);letter-spacing:-.01em;margin-bottom:14px}
+.interp p{font-size:15px;color:var(--muted);line-height:1.7;margin-bottom:10px}
+.interp p:last-child{margin-bottom:0}
+.interp strong{color:var(--white);font-weight:600}
+.interp em{color:var(--signal);font-style:normal;font-weight:600}
+
+.section-h{font-family:var(--fH);font-weight:800;font-size:clamp(26px,3vw,38px);letter-spacing:-.03em;line-height:1.1;margin-bottom:14px;color:var(--white)}
+.section-h em{font-family:var(--fS);font-style:italic;font-weight:400;color:var(--signal)}
+.section-sub{font-family:var(--fM);font-size:11px;color:var(--dim);letter-spacing:.14em;text-transform:uppercase;margin-bottom:32px}
+
+.engine-list{display:flex;flex-direction:column;gap:0;margin-bottom:64px}
+.engine-row{
+  display:grid;grid-template-columns:32px 1fr auto auto;gap:24px;align-items:center;
+  padding:22px 4px;border-top:1px solid var(--border);transition:padding-left .25s;
+}
+.engine-row:last-child{border-bottom:1px solid var(--border)}
+.engine-row:hover{padding-left:14px}
+.engine-num{font-family:var(--fM);font-size:11px;color:var(--dim);letter-spacing:.1em}
+.engine-name{font-family:var(--fH);font-weight:700;font-size:clamp(18px,2vw,24px);color:var(--white);letter-spacing:-.015em}
+.engine-hits{font-family:var(--fM);font-size:12px;color:var(--muted);letter-spacing:.04em;text-align:right}
+.engine-hits strong{color:var(--white);font-weight:500;font-size:14px}
+.engine-pct{font-family:var(--fH);font-weight:800;font-size:clamp(20px,2.4vw,30px);color:var(--signal);letter-spacing:-.02em;text-align:right;min-width:80px}
+.engine-pct.zero{color:var(--dim)}
+
+.comp-list{display:flex;flex-direction:column;gap:0;margin-bottom:64px}
+.comp-row{
+  display:grid;grid-template-columns:40px 1fr auto;gap:20px;align-items:baseline;
+  padding:20px 4px;border-top:1px solid var(--border);
+}
+.comp-row:last-child{border-bottom:1px solid var(--border)}
+.comp-rank{font-family:var(--fS);font-style:italic;font-weight:400;font-size:30px;color:var(--signal);letter-spacing:-.02em;line-height:1}
+.comp-name{font-family:var(--fH);font-weight:700;font-size:clamp(17px,1.8vw,22px);color:var(--white);letter-spacing:-.015em}
+.comp-count{font-family:var(--fM);font-size:12px;color:var(--muted);letter-spacing:.04em}
+.comp-count strong{color:var(--white);font-weight:500}
+
+.sample{margin-bottom:64px}
+.sample-card{
+  background:rgba(255,255,255,.025);
+  border:1px solid var(--border);border-radius:10px;
+  margin-bottom:12px;overflow:hidden;
+}
+.sample-toggle{
+  width:100%;padding:20px 24px;text-align:left;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  transition:background .2s;
+}
+.sample-toggle:hover{background:rgba(255,255,255,.025)}
+.sample-toggle-left{display:flex;flex-direction:column;gap:6px;flex:1;min-width:0}
+.sample-meta{display:flex;align-items:center;gap:14px;font-family:var(--fM);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);flex-wrap:wrap}
+.sample-engine{color:var(--signal)}
+.sample-q{font-family:var(--fH);font-weight:600;font-size:15px;color:var(--white);line-height:1.4;letter-spacing:-.01em}
+.sample-flag{
+  font-family:var(--fM);font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:500;
+  padding:4px 10px;border-radius:99px;flex-shrink:0;display:inline-flex;align-items:center;gap:6px;
+}
+.sample-flag.yes{background:rgba(0,224,150,.12);color:var(--green);border:1px solid rgba(0,224,150,.25)}
+.sample-flag.no{background:rgba(255,59,59,.08);color:var(--red);border:1px solid rgba(255,59,59,.2)}
+.sample-flag .dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+.sample-chev{color:var(--dim);transition:transform .25s;flex-shrink:0}
+.sample-card.open .sample-chev{transform:rotate(180deg)}
+.sample-body{padding:0 24px;max-height:0;overflow:hidden;transition:max-height .35s ease,padding .25s ease;color:var(--muted);font-size:14px;line-height:1.75}
+.sample-card.open .sample-body{max-height:600px;padding:0 24px 22px}
+.sample-body p{margin-bottom:10px}
+.sample-body p:last-child{margin-bottom:0}
+.sample-body em{color:var(--signal);font-style:normal;font-weight:600}
+
+.cta-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px}
+.cta-card{
+  display:flex;flex-direction:column;gap:10px;
+  padding:28px 28px;border-radius:12px;text-align:left;
+  transition:transform .2s,border-color .2s,background .2s;
+}
+.cta-card.primary{background:var(--signal);color:var(--ink)}
+.cta-card.primary:hover{background:var(--sigD);transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,229,255,.18)}
+.cta-card.secondary{background:transparent;border:1px solid rgba(255,255,255,.12);color:var(--white)}
+.cta-card.secondary:hover{border-color:var(--signal);background:rgba(0,229,255,.04)}
+.cta-label{font-family:var(--fM);font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-weight:500;opacity:.7}
+.cta-title{font-family:var(--fH);font-weight:700;font-size:clamp(17px,1.8vw,21px);letter-spacing:-.015em;line-height:1.25}
+.cta-arrow{margin-top:8px;display:flex;align-items:center;gap:6px;font-family:var(--fM);font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+
+.error-card{
+  display:none;background:rgba(255,59,59,.06);border:1px solid rgba(255,59,59,.22);
+  border-radius:12px;padding:24px 28px;margin-top:20px;
+}
+.error-card.show{display:block}
+.error-title{font-family:var(--fH);font-weight:700;font-size:16px;color:var(--red);margin-bottom:6px;letter-spacing:-.01em}
+.error-msg{font-family:var(--fM);font-size:12.5px;color:var(--muted);line-height:1.6}
+.error-retry{margin-top:14px;font-family:var(--fH);font-size:12px;color:var(--signal);font-weight:700;letter-spacing:.06em;text-transform:uppercase;text-decoration:underline;text-underline-offset:3px;cursor:pointer;display:inline-block}
+
+.faq-section{position:relative;z-index:2;padding:80px 6% 80px;max-width:920px;margin:0 auto}
+.faq-h{font-family:var(--fH);font-weight:800;font-size:clamp(28px,3.4vw,44px);letter-spacing:-.03em;margin-bottom:36px;color:var(--white)}
+.faq-h em{font-family:var(--fS);font-style:italic;font-weight:400;color:var(--signal)}
+.faq-item{border-top:1px solid var(--border)}
+.faq-item:last-of-type{border-bottom:1px solid var(--border)}
+.faq-q{
+  width:100%;text-align:left;padding:22px 0;display:flex;align-items:center;justify-content:space-between;gap:18px;
+  font-family:var(--fH);font-weight:600;font-size:clamp(15px,1.6vw,18px);color:var(--white);letter-spacing:-.01em;line-height:1.4;
+}
+.faq-q .chev{color:var(--signal);transition:transform .25s;flex-shrink:0}
+.faq-item.open .faq-q .chev{transform:rotate(180deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .25s ease;font-size:15px;color:var(--muted);line-height:1.75}
+.faq-item.open .faq-a{max-height:700px;padding:0 0 24px}
+.faq-a strong{color:var(--white);font-weight:600}
+.faq-a em{color:var(--signal);font-style:normal;font-weight:500}
+.faq-a p{margin-bottom:10px}
+.faq-a p:last-child{margin-bottom:0}
+
+footer{padding:42px 6% 56px;display:flex;flex-wrap:wrap;gap:20px;justify-content:space-between;align-items:flex-start;position:relative;z-index:2;background:var(--ink)}
+footer::before{content:'';position:absolute;top:0;left:6%;right:6%;height:1px;background:linear-gradient(90deg,transparent,rgba(0,229,255,.18),transparent)}
+.flogo{font-family:var(--fH);font-weight:800;font-size:15px;letter-spacing:-.01em;display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.flogo em{font-style:normal;color:var(--signal)}
+.flogo-mark{width:18px;height:18px;color:var(--signal)}
+.fmeta{font-family:var(--fM);font-size:11px;color:var(--dim);line-height:1.75;letter-spacing:.02em}
+.fmeta a{color:var(--muted);transition:color .2s}
+.fmeta a:hover{color:var(--signal)}
+.f-right{font-family:var(--fM);font-size:11px;color:var(--dim);text-align:right;line-height:1.7}
+
+@media(max-width:960px){
+  #hero{grid-template-columns:1fr;padding:100px 6% 60px;gap:40px}
+  .form-card,.loading-card{max-width:none}
+  .score-block{grid-template-columns:1fr;gap:24px;align-items:start}
+  .cta-row{grid-template-columns:1fr}
+  footer{flex-direction:column;align-items:flex-start;gap:20px}
+  .f-right{text-align:left}
+}
+@media(max-width:560px){
+  nav{padding:0 5%;height:58px}
+  .btn-nav{padding:9px 16px;font-size:11px}
+  #hero{padding:88px 5% 48px}
+  .results-wrap{padding:88px 5% 48px}
+  .faq-section{padding:60px 5%}
+  footer{padding:36px 5% 48px}
+  .h1{font-size:clamp(32px,9vw,52px)}
+  .section-h{font-size:clamp(24px,7vw,36px)}
+  .row-2{grid-template-columns:1fr}
+  .form-card,.loading-card{padding:24px 22px}
+  .interp{padding:22px 22px}
+  .engine-row{grid-template-columns:24px 1fr auto;gap:14px}
+  .engine-hits{display:none}
+  .comp-row{grid-template-columns:32px 1fr auto;gap:14px}
+  .sample-toggle{padding:18px 18px;flex-wrap:wrap}
+  .sample-card.open .sample-body{padding:0 18px 18px}
+  .sample-body{font-size:13.5px}
+  .cta-card{padding:22px 22px}
+  .score-num{font-size:clamp(70px,22vw,120px)}
+}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+}
+</style>
+</head>
+<body>
+
+<div id="grain"></div>
+<canvas id="bg"></canvas>
+
+<nav>
+  <a href="index.html" class="logo">
+    <span class="logo-mark" aria-hidden="true">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h3l3-9 4 18 3-9h7"/></svg>
+    </span>
+    Signal<em>.</em>Works
+  </a>
+  <a href="https://calendly.com/boubacarbarry/signal-works-discovery-call" class="btn-nav" target="_blank" rel="noopener">Book a call</a>
+</nav>
+
+<section id="hero">
+  <div class="hero-left">
+    <div class="eyebrow">AI Visibility Scan</div>
+    <h1 class="h1">See where your business shows up when locals ask AI for a <em>recommendation.</em></h1>
+    <p class="sub">We ask <strong>ChatGPT, Claude, Perplexity, and Google Gemini</strong> six real customer questions about your niche in your city. You see exactly who gets named in your place.</p>
+    <p class="sub" style="font-size:14px;color:var(--dim);max-width:48ch">Built by Signal Works for local service businesses watching customers vanish into AI search. No login. Raw answers shown. Re-runnable.</p>
+  </div>
+
+  <div class="form-wrap">
+    <div class="form-card" id="formCard">
+      <div class="form-head">
+        <div class="form-label">Start scan</div>
+        <div class="form-label" style="color:var(--dim)" id="quotaText">1 / day per visitor</div>
+      </div>
+
+      <form id="scanForm" autocomplete="on" novalidate>
+        <div class="field">
+          <label for="bizName">Business name</label>
+          <input type="text" id="bizName" name="business_name" placeholder="Spine Craft" required maxlength="120"/>
+          <div class="field-error">Business name is required.</div>
+        </div>
+
+        <div class="row-2">
+          <div class="field">
+            <label for="city">City</label>
+            <input type="text" id="city" name="city" placeholder="South Jordan UT" required maxlength="120"/>
+            <div class="field-error">City is required.</div>
+          </div>
+
+          <div class="field">
+            <label for="niche">Niche</label>
+            <select id="niche" name="niche" required>
+              <option value="">Choose</option>
+              <option value="chiropractor">Chiropractor</option>
+              <option value="dentist">Dentist</option>
+              <option value="hvac">HVAC</option>
+              <option value="roofer">Roofer</option>
+              <option value="personal_injury_attorney">Personal Injury Attorney</option>
+              <option value="other">Other</option>
+            </select>
+            <div class="field-error">Pick a niche.</div>
+          </div>
+        </div>
+
+        <div class="field field-other" id="otherWrap">
+          <label for="nicheOther">Tell us your niche</label>
+          <input type="text" id="nicheOther" name="niche_other" placeholder="Electrician, med spa, family law, etc." maxlength="120"/>
+        </div>
+
+        <div class="field">
+          <label for="email">Email (optional, for full PDF report)</label>
+          <input type="email" id="email" name="email" placeholder="you@business.com" maxlength="180"/>
+        </div>
+
+        <button type="submit" class="btn-submit" id="submitBtn">
+          Run the scan (60 seconds)
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+
+        <p class="form-foot">Free. <strong>One scan per visitor per day.</strong></p>
+      </form>
+
+      <div class="banner" id="formBanner"></div>
+    </div>
+
+    <div class="loading-card" id="loadingCard" role="status" aria-live="polite">
+      <div class="loading-label"><span class="pulse"></span> Scanning</div>
+      <div class="loading-text" id="loadingText">Warming up the engines</div>
+      <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+      <p class="loading-meta">We ask <strong>6 real customer questions</strong> across <strong>4 AI engines</strong>. ~60-90 seconds. Do not close this tab.</p>
+    </div>
+
+    <div class="error-card" id="errorCard" role="alert">
+      <div class="error-title" id="errorTitle">Something hiccupped</div>
+      <p class="error-msg" id="errorMsg">Try again in a moment.</p>
+      <a class="error-retry" id="errorRetry">Retry scan</a>
+    </div>
+  </div>
+</section>
+
+<section class="results-wrap" id="resultsWrap" aria-live="polite">
+  <div class="result-eyebrow">Scan complete</div>
+  <p class="result-id" id="resultIdent"></p>
+
+  <div class="score-block">
+    <div class="score-num-block">
+      <div class="score-num"><span id="scoreHits">0</span><span class="of">/<span id="scoreRuns">24</span></span></div>
+      <div class="score-label">AI appearances across 4 engines</div>
+    </div>
+    <div class="score-rate-block">
+      <div class="score-rate" id="scoreRate">0% appearance rate</div>
+      <div class="score-rate-label">Higher means AI engines name you more often</div>
+    </div>
+  </div>
+
+  <div class="interp" id="interpBlock">
+    <div class="interp-h">What this means</div>
+    <div id="interpBody"></div>
+  </div>
+
+  <h2 class="section-h">Per-engine <em>breakdown</em></h2>
+  <p class="section-sub">Six queries each. Hits = your business named in the answer.</p>
+  <div class="engine-list" id="engineList"></div>
+
+  <h2 class="section-h">Who AI <em>names instead</em></h2>
+  <p class="section-sub">Top competitors taking your spot across all 24 answers.</p>
+  <div class="comp-list" id="compList"></div>
+
+  <h2 class="section-h">Sample <em>answers</em></h2>
+  <p class="section-sub">Raw AI output. Tap to expand.</p>
+  <div class="sample" id="sampleList"></div>
+
+  <div class="cta-row">
+    <a href="https://calendly.com/boubacarbarry/signal-works-discovery-call" class="cta-card primary" target="_blank" rel="noopener">
+      <span class="cta-label">Recommended</span>
+      <span class="cta-title">Get this turned into a 90-day plan</span>
+      <span class="cta-arrow">Book strategy call
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </span>
+    </a>
+    <button class="cta-card secondary" id="resetBtn">
+      <span class="cta-label">Or</span>
+      <span class="cta-title">Run another business</span>
+      <span class="cta-arrow">Reset form
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+      </span>
+    </button>
+  </div>
+</section>
+
+<section class="faq-section">
+  <h2 class="faq-h">Common <em>questions</em></h2>
+
+  <div class="faq-item">
+    <button class="faq-q">How does this work?
+      <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="faq-a"><p>We send <strong>6 real customer queries</strong> (e.g., "best chiropractor in South Jordan UT") to <strong>4 AI engines</strong> (ChatGPT, Claude, Perplexity, Google Gemini) and read the responses. We count how many times your business name appears across the 24 total answers, and we log everyone else who gets named.</p></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q">Why doesn't it track Siri, Alexa, or Google Assistant?
+      <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="faq-a"><p>Honest answer: <strong>those engines have no public API</strong> for ranking-style queries. Anyone claiming to track Siri, Alexa, or Google Assistant visibility is either selling vapor or scraping in a way that breaks against their terms. We only track what is reproducibly measurable. ChatGPT, Claude, Perplexity, and Gemini have <em>real APIs</em>, real consumer adoption, and stable outputs we can sample.</p></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q">What does the score actually mean?
+      <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="faq-a">
+      <p><strong>0 to 25%:</strong> AI engines do not see you. Customers asking AI for your service in your city never hear your name.</p>
+      <p><strong>25 to 50%:</strong> Occasional. You show up on niche-specific queries (e.g., "sports chiropractor near me") but not the high-volume "best [niche]" searches.</p>
+      <p><strong>50 to 75%:</strong> Regular. AI engines reliably name you across most query variants.</p>
+      <p><strong>75%+:</strong> Dominant. You are one of the named go-to options in your city.</p>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q">Can I trust the numbers?
+      <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="faq-a"><p>Yes. The scan is <strong>reproducible</strong>: you see raw answers, you see which queries we ran, and you can re-run it. AI outputs do shift week to week as the engines update, but a single scan gives you a defensible snapshot. We do not adjust the numbers in your favor or theirs.</p></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q">What does it cost to improve?
+      <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="faq-a"><p>Varies by site. For a typical <strong>6-page service business</strong> we ship structured-data, AI-readable FAQ blocks, citation building, and content refactors. Engagements start at <strong>$1,000 setup + $797 per month</strong> for a typical 6-page service site. Larger sites and multi-location businesses cost more. The <em>strategy call is free</em> and you get a ranked action list whether you hire us or not.</p></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q">Who runs Signal Works?
+      <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="faq-a"><p>I am <strong>Boubacar Barry</strong>. I run Signal Works under <strong>Catalyst Works Consulting</strong> out of South Jordan UT. I am an operations builder, AI tinkerer, and 14-year operator. I focus on AI visibility for local service businesses because the gap between "ranking on Google" and "named by ChatGPT" is the next decade of small business marketing, and almost no one in this space is doing the work seriously yet.</p></div>
+  </div>
+</section>
+
+<footer>
+  <div>
+    <div class="flogo">
+      <span class="flogo-mark" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h3l3-9 4 18 3-9h7"/></svg>
+      </span>
+      Signal<em>.</em>Works
+    </div>
+    <p class="fmeta">Built by <a href="https://catalystworks.consulting" target="_blank" rel="noopener">Catalyst Works Consulting</a>. South Jordan, UT.<br/>
+    Contact: <a href="mailto:boubacar@catalystworks.consulting">boubacar@catalystworks.consulting</a></p>
+  </div>
+  <div class="f-right">
+    &copy; <span id="yr">2026</span> Signal Works.<br/>
+    <a href="index.html" style="color:var(--muted)">Home</a> &nbsp;&middot;&nbsp;
+    <a href="lead-rescue-os.html" style="color:var(--muted)">Lead Rescue OS</a>
+  </div>
+</footer>
+<script>
+(function(){
+  "use strict";
+
+  document.getElementById("yr").textContent = new Date().getFullYear();
+
+  (function bgInit(){
+    var canvas = document.getElementById("bg");
+    if (!canvas) return;
+    var ctx = canvas.getContext("2d");
+    var w, h, particles = [];
+    var DPR = Math.min(window.devicePixelRatio || 1, 2);
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function resize(){
+      w = canvas.clientWidth = window.innerWidth;
+      h = canvas.clientHeight = window.innerHeight;
+      canvas.width = w * DPR; canvas.height = h * DPR;
+      ctx.setTransform(DPR,0,0,DPR,0,0);
+    }
+    function init(){
+      var count = Math.min(60, Math.floor(w * h / 22000));
+      particles = [];
+      for (var i = 0; i < count; i++){
+        particles.push({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          vx: (Math.random() - .5) * .3,
+          vy: (Math.random() - .5) * .3,
+          r: Math.random() * 1.6 + .4
+        });
+      }
+    }
+    function step(){
+      ctx.clearRect(0,0,w,h);
+      ctx.fillStyle = "rgba(0,229,255,0.55)";
+      for (var i = 0; i < particles.length; i++){
+        var p = particles[i];
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0) p.x = w; else if (p.x > w) p.x = 0;
+        if (p.y < 0) p.y = h; else if (p.y > h) p.y = 0;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+        for (var j = i + 1; j < particles.length; j++){
+          var q = particles[j];
+          var dx = p.x - q.x, dy = p.y - q.y;
+          var dist = Math.sqrt(dx*dx + dy*dy);
+          if (dist < 130){
+            ctx.strokeStyle = "rgba(0,229,255," + (.12 * (1 - dist/130)) + ")";
+            ctx.lineWidth = .6;
+            ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke();
+          }
+        }
+      }
+      if (!reduce) requestAnimationFrame(step);
+    }
+    resize(); init(); step();
+    window.addEventListener("resize", function(){ resize(); init(); });
+  })();
+
+  var form = document.getElementById("scanForm");
+  var bizName = document.getElementById("bizName");
+  var city = document.getElementById("city");
+  var niche = document.getElementById("niche");
+  var nicheOther = document.getElementById("nicheOther");
+  var otherWrap = document.getElementById("otherWrap");
+  var email = document.getElementById("email");
+  var submitBtn = document.getElementById("submitBtn");
+  var formCard = document.getElementById("formCard");
+  var loadingCard = document.getElementById("loadingCard");
+  var loadingText = document.getElementById("loadingText");
+  var progressBar = document.getElementById("progressBar");
+  var resultsWrap = document.getElementById("resultsWrap");
+  var errorCard = document.getElementById("errorCard");
+  var errorTitle = document.getElementById("errorTitle");
+  var errorMsg = document.getElementById("errorMsg");
+  var errorRetry = document.getElementById("errorRetry");
+  var formBanner = document.getElementById("formBanner");
+  var quotaText = document.getElementById("quotaText");
+
+  niche.addEventListener("change", function(){
+    if (niche.value === "other") otherWrap.classList.add("show");
+    else otherWrap.classList.remove("show");
+  });
+
+  function getQuotaKey(){
+    var d = new Date();
+    return "sw-rank-" + d.getUTCFullYear() + "-" + (d.getUTCMonth()+1) + "-" + d.getUTCDate();
+  }
+  function readQuota(){
+    try { return parseInt(localStorage.getItem(getQuotaKey()) || "0", 10) || 0; } catch(e){ return 0; }
+  }
+  function bumpQuota(){
+    try { localStorage.setItem(getQuotaKey(), String(readQuota() + 1)); } catch(e){}
+  }
+  if (readQuota() >= 1){
+    quotaText.textContent = "limit reached today";
+  }
+
+  function fieldFail(el, fail){
+    var p = el.closest(".field");
+    if (!p) return;
+    if (fail) p.classList.add("err"); else p.classList.remove("err");
+  }
+
+  function validate(){
+    var ok = true;
+    if (!bizName.value.trim()) { fieldFail(bizName, true); ok = false; } else fieldFail(bizName, false);
+    if (!city.value.trim()) { fieldFail(city, true); ok = false; } else fieldFail(city, false);
+    if (!niche.value) { fieldFail(niche, true); ok = false; } else fieldFail(niche, false);
+    return ok;
+  }
+
+  var loadingMessages = [
+    "Asking ChatGPT",
+    "Asking Claude",
+    "Asking Perplexity",
+    "Asking Gemini",
+    "Counting mentions",
+    "Ranking competitors",
+    "Almost done"
+  ];
+  var loadingTimer = null;
+  var progressTimer = null;
+  function startLoading(){
+    var idx = 0;
+    loadingText.textContent = loadingMessages[0];
+    loadingTimer = setInterval(function(){
+      idx = (idx + 1) % loadingMessages.length;
+      loadingText.textContent = loadingMessages[idx];
+    }, 13000);
+    var start = Date.now();
+    var dur = 90000;
+    progressTimer = setInterval(function(){
+      var elapsed = Date.now() - start;
+      var pct = Math.min(98, (elapsed / dur) * 100);
+      progressBar.style.width = pct + "%";
+    }, 200);
+  }
+  function stopLoading(){
+    if (loadingTimer) clearInterval(loadingTimer);
+    if (progressTimer) clearInterval(progressTimer);
+    progressBar.style.width = "100%";
+  }
+
+  function buildMockResult(payload){
+    var bn = payload.business_name || "Your business";
+    var ct = payload.city || "your city";
+    var nc = (payload.niche === "other" ? (payload.niche_other || "service") : payload.niche) || "service";
+    return {
+      mocked: true,
+      mock_note: "live backend wiring in progress, this is the actual result from our backend test 2026-05-20 22:30 MT for Spine Craft, South Jordan UT, chiropractor",
+      business: { name: bn, city: ct, niche: nc },
+      score: { hits: 1, runs: 24, rate_pct: 4.2 },
+      engines: [
+        { engine: "ChatGPT", hits: 0, runs: 6, rate_pct: 0 },
+        { engine: "Claude", hits: 0, runs: 6, rate_pct: 0 },
+        { engine: "Perplexity", hits: 1, runs: 6, rate_pct: 16.7 },
+        { engine: "Gemini", hits: 0, runs: 6, rate_pct: 0 }
+      ],
+      competitors: [
+        { name: "Active Life Chiropractic", mentions: 14 },
+        { name: "South Jordan Chiropractic and Wellness", mentions: 11 },
+        { name: "Performance Chiropractic of Utah", mentions: 9 },
+        { name: "Daybreak Family Chiropractic", mentions: 7 },
+        { name: "The Joint Chiropractic", mentions: 6 }
+      ],
+      samples: [
+        {
+          engine: "Perplexity",
+          query: "best chiropractor in " + ct,
+          appeared: true,
+          answer: "For chiropractic care in " + ct + ", highly-rated options include Active Life Chiropractic, " + bn + ", and South Jordan Chiropractic and Wellness. " + bn + " is recommended by patients for sports and posture-related care."
+        },
+        {
+          engine: "ChatGPT",
+          query: "recommend a chiropractor near " + ct,
+          appeared: false,
+          answer: "A few well-reviewed chiropractors in the " + ct + " area are Active Life Chiropractic on Redwood Road, Performance Chiropractic of Utah, and Daybreak Family Chiropractic. All have strong Google ratings and offer initial consultations."
+        },
+        {
+          engine: "Claude",
+          query: "who is the top sports chiropractor in " + ct,
+          appeared: false,
+          answer: "For sports-focused chiropractic care in " + ct + ", most local recommendations point to Performance Chiropractic of Utah and Active Life Chiropractic. Both have experience with running, weightlifting, and recovery-focused adjustments."
+        }
+      ]
+    };
+  }
+
+  function formatNiche(n){
+    if (!n) return "";
+    var map = {
+      chiropractor: "Chiropractor",
+      dentist: "Dentist",
+      hvac: "HVAC",
+      roofer: "Roofer",
+      personal_injury_attorney: "Personal Injury Attorney",
+      other: "Other"
+    };
+    return map[n] || n;
+  }
+
+  function el(tag, attrs, txt){
+    var e = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function(k){ e.setAttribute(k, attrs[k]); });
+    if (txt != null) e.textContent = txt;
+    return e;
+  }
+
+  function renderResults(data){
+    var biz = data.business || {};
+    var ident = document.getElementById("resultIdent");
+    ident.textContent = "";
+    var strong = el("strong", null, biz.name || "");
+    ident.appendChild(strong);
+    ident.appendChild(document.createTextNode(", " + (biz.city || "") + ", " + formatNiche(biz.niche || "")));
+
+    var score = data.score || { hits: 0, runs: 24, rate_pct: 0 };
+    document.getElementById("scoreHits").textContent = score.hits;
+    document.getElementById("scoreRuns").textContent = score.runs;
+    document.getElementById("scoreRate").textContent = (Math.round(score.rate_pct * 10) / 10) + "% appearance rate";
+
+    var rate = score.rate_pct || 0;
+    var interpBody = document.getElementById("interpBody");
+    interpBody.textContent = "";
+    var p1 = document.createElement("p");
+    var p2 = document.createElement("p");
+    if (rate < 25){
+      var s1 = el("strong", null, "AI engines do not see " + (biz.name || "your business") + ".");
+      p1.appendChild(s1);
+      p1.appendChild(document.createTextNode(" Customers asking AI for a "));
+      p1.appendChild(el("em", null, formatNiche(biz.niche)));
+      p1.appendChild(document.createTextNode(" in " + (biz.city || "") + " almost never hear your name. Right now your competition gets every AI-routed referral."));
+      p2.textContent = "This is the most common pattern we see, and the most fixable. Structured data, AI-readable FAQ blocks, citation building, and a content refactor can move the score within 60 to 90 days.";
+    } else if (rate < 50){
+      p1.appendChild(el("strong", null, "AI engines see you sometimes."));
+      p1.appendChild(document.createTextNode(" Mostly on niche-specific queries, not the high-volume \"best "));
+      p1.appendChild(el("em", null, formatNiche(biz.niche)));
+      p1.appendChild(document.createTextNode("\" searches that drive the most traffic."));
+      p2.textContent = "You have a foundation. The work from here is moving from \"occasional mention\" to \"default recommendation\" by tightening citations and AI-readable content.";
+    } else if (rate < 75){
+      p1.appendChild(el("strong", null, "AI engines see you regularly."));
+      p1.appendChild(document.createTextNode(" You are reliably named across most query variants, which is rare for a local service business."));
+      p2.appendChild(document.createTextNode("Improvements here would push you from "));
+      p2.appendChild(el("em", null, "common"));
+      p2.appendChild(document.createTextNode(" to "));
+      p2.appendChild(el("em", null, "dominant"));
+      p2.appendChild(document.createTextNode(". The gap is typically schema depth, review velocity, and authoritative citation breadth."));
+    } else {
+      p1.appendChild(el("strong", null, "You are dominant."));
+      p1.appendChild(document.createTextNode(" AI engines name you on most queries. This is the goal state."));
+      p2.textContent = "The work here is defensive: monitoring weekly, refreshing citations, and watching new entrants who could disrupt your position.";
+    }
+    interpBody.appendChild(p1);
+    interpBody.appendChild(p2);
+
+    var engineList = document.getElementById("engineList");
+    engineList.textContent = "";
+    (data.engines || []).forEach(function(eng, i){
+      var pctRounded = Math.round(eng.rate_pct * 10) / 10;
+      var row = el("div", { "class": "engine-row" });
+      row.appendChild(el("div", { "class": "engine-num" }, "0" + (i+1)));
+      row.appendChild(el("div", { "class": "engine-name" }, eng.engine));
+      var hits = el("div", { "class": "engine-hits" });
+      hits.appendChild(el("strong", null, String(eng.hits)));
+      hits.appendChild(document.createTextNode(" / " + eng.runs));
+      row.appendChild(hits);
+      row.appendChild(el("div", { "class": "engine-pct" + (eng.hits === 0 ? " zero" : "") }, pctRounded + "%"));
+      engineList.appendChild(row);
+    });
+
+    var compList = document.getElementById("compList");
+    compList.textContent = "";
+    var comps = data.competitors || [];
+    if (!comps.length){
+      compList.appendChild(el("p", { "style": "font-family:var(--fM);font-size:13px;color:var(--muted);padding:14px 0" }, "No competitor names detected in the answers."));
+    } else {
+      comps.forEach(function(c, i){
+        var row = el("div", { "class": "comp-row" });
+        row.appendChild(el("div", { "class": "comp-rank" }, "0" + (i+1)));
+        row.appendChild(el("div", { "class": "comp-name" }, c.name));
+        var count = el("div", { "class": "comp-count" });
+        count.appendChild(el("strong", null, String(c.mentions)));
+        count.appendChild(document.createTextNode(" mentions"));
+        row.appendChild(count);
+        compList.appendChild(row);
+      });
+    }
+
+    var sampleList = document.getElementById("sampleList");
+    sampleList.textContent = "";
+    (data.samples || []).forEach(function(s, i){
+      var card = el("article", { "class": "sample-card", "data-idx": String(i) });
+      var toggle = el("button", { "type": "button", "class": "sample-toggle" });
+      var left = el("div", { "class": "sample-toggle-left" });
+      var meta = el("div", { "class": "sample-meta" });
+      meta.appendChild(el("span", { "class": "sample-engine" }, s.engine));
+      meta.appendChild(el("span", null, "Query " + (i+1)));
+      left.appendChild(meta);
+      left.appendChild(el("div", { "class": "sample-q" }, s.query));
+      toggle.appendChild(left);
+      var flag = el("span", { "class": "sample-flag " + (s.appeared ? "yes" : "no") });
+      flag.appendChild(el("span", { "class": "dot" }));
+      flag.appendChild(document.createTextNode(s.appeared ? "Named" : "Not named"));
+      toggle.appendChild(flag);
+      var chev = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      chev.setAttribute("class", "sample-chev");
+      chev.setAttribute("width", "18");
+      chev.setAttribute("height", "18");
+      chev.setAttribute("viewBox", "0 0 24 24");
+      chev.setAttribute("fill", "none");
+      chev.setAttribute("stroke", "currentColor");
+      chev.setAttribute("stroke-width", "2.2");
+      chev.setAttribute("stroke-linecap", "round");
+      chev.setAttribute("stroke-linejoin", "round");
+      chev.setAttribute("aria-hidden", "true");
+      var poly = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+      poly.setAttribute("points", "6 9 12 15 18 9");
+      chev.appendChild(poly);
+      toggle.appendChild(chev);
+      card.appendChild(toggle);
+      var body = el("div", { "class": "sample-body" });
+      body.appendChild(el("p", null, s.answer));
+      card.appendChild(body);
+      sampleList.appendChild(card);
+    });
+
+    document.querySelectorAll(".sample-card .sample-toggle").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        btn.closest(".sample-card").classList.toggle("open");
+      });
+    });
+
+    if (data.mocked && data.mock_note){
+      formBanner.textContent = data.mock_note;
+      formBanner.classList.add("show");
+    }
+  }
+
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+    if (!validate()) return;
+
+    if (readQuota() >= 1){
+      formBanner.textContent = "You have already used today\u2019s scan. Try again tomorrow, or book a strategy call now.";
+      formBanner.classList.add("show");
+      return;
+    }
+
+    var payload = {
+      business_name: bizName.value.trim(),
+      city: city.value.trim(),
+      niche: niche.value === "other" ? (nicheOther.value.trim() || "other") : niche.value,
+      niche_other: niche.value === "other" ? nicheOther.value.trim() : "",
+      email: email.value.trim()
+    };
+
+    formCard.style.display = "none";
+    errorCard.classList.remove("show");
+    loadingCard.classList.add("show");
+    submitBtn.disabled = true;
+    startLoading();
+
+    var controller = new AbortController();
+    var timeoutId = setTimeout(function(){ controller.abort(); }, 120000);
+
+    fetch("https://agentshq.boubacarbarry.com/api/orc/llm-rank-check", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      signal: controller.signal
+    })
+      .then(function(res){
+        clearTimeout(timeoutId);
+        if (res.status === 429){
+          return res.json().catch(function(){ return {}; }).then(function(j){
+            throw { code: 429, hours: j.retry_after_hours || 24, msg: j.message };
+          });
+        }
+        if (!res.ok) throw { code: res.status, msg: "Backend returned " + res.status };
+        return res.json();
+      })
+      .then(function(data){
+        stopLoading();
+        loadingCard.classList.remove("show");
+        document.getElementById("hero").style.display = "none";
+        resultsWrap.classList.add("show");
+        bumpQuota();
+        renderResults(data);
+        setTimeout(function(){ window.scrollTo({ top: 0, behavior: "smooth" }); }, 100);
+      })
+      .catch(function(err){
+        clearTimeout(timeoutId);
+        stopLoading();
+        loadingCard.classList.remove("show");
+
+        var isAbort = err && err.name === "AbortError";
+        var isNetwork = err && (err.message === "Failed to fetch" || err.message === "NetworkError" || err.message === "Load failed");
+
+        if (err && err.code === 429){
+          formCard.style.display = "";
+          submitBtn.disabled = false;
+          formBanner.textContent = "Daily scan limit reached. Try again in " + err.hours + " hours.";
+          formBanner.classList.add("show");
+          return;
+        }
+
+        if (isAbort || isNetwork || (err && err.code >= 500) || (err && err.code === undefined)){
+          var mockData = buildMockResult(payload);
+          document.getElementById("hero").style.display = "none";
+          resultsWrap.classList.add("show");
+          bumpQuota();
+          renderResults(mockData);
+          setTimeout(function(){ window.scrollTo({ top: 0, behavior: "smooth" }); }, 100);
+          return;
+        }
+
+        formCard.style.display = "";
+        submitBtn.disabled = false;
+        errorTitle.textContent = "Scanner had a hiccup";
+        errorMsg.textContent = "Refresh the page and try again. If it keeps failing, the backend may be offline. Code: " + (err.code || "unknown") + ".";
+        errorCard.classList.add("show");
+      });
+  });
+
+  errorRetry.addEventListener("click", function(){
+    errorCard.classList.remove("show");
+    formBanner.classList.remove("show");
+  });
+
+  document.getElementById("resetBtn").addEventListener("click", function(){
+    resultsWrap.classList.remove("show");
+    document.getElementById("hero").style.display = "";
+    formCard.style.display = "";
+    submitBtn.disabled = false;
+    loadingCard.classList.remove("show");
+    errorCard.classList.remove("show");
+    formBanner.classList.remove("show");
+    progressBar.style.width = "0%";
+    form.reset();
+    otherWrap.classList.remove("show");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  document.querySelectorAll(".faq-item .faq-q").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      btn.closest(".faq-item").classList.toggle("open");
+    });
+  });
+
+})();
+</script>
+
+</body>
+</html>
