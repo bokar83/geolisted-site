@@ -549,8 +549,10 @@ footer::before{content:'';position:absolute;top:0;left:6%;right:6%;height:1px;ba
     var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     function resize(){
-      w = canvas.clientWidth = window.innerWidth;
-      h = canvas.clientHeight = window.innerHeight;
+      w = window.innerWidth;
+      h = window.innerHeight;
+      canvas.style.width = w + "px";
+      canvas.style.height = h + "px";
       canvas.width = w * DPR; canvas.height = h * DPR;
       ctx.setTransform(DPR,0,0,DPR,0,0);
     }
