@@ -93,6 +93,19 @@ ol.steps strong{font-weight:700;color:#fff}
 .btn{display:inline-block;background:var(--signal);color:var(--ink);font-family:var(--fH);font-weight:700;font-size:13px;
   letter-spacing:.05em;text-transform:uppercase;padding:15px 28px;border-radius:2px;transition:background .15s,transform .12s;margin-top:6px}
 .btn:hover{background:var(--sigD);transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--white);border:1px solid rgba(255,255,255,.16)}
+.btn-ghost:hover{background:transparent;border-color:var(--signal);color:var(--signal)}
+
+/* DFY $597 rung */
+.dfy-list{list-style:none;margin:2px 0 16px;padding:0}
+.dfy-list li{position:relative;padding-left:24px;font-size:14.5px;line-height:1.55;color:var(--muted);margin-bottom:9px}
+.dfy-list li::before{content:"";position:absolute;left:0;top:8px;width:9px;height:9px;border-radius:2px;background:var(--signal);opacity:.7}
+.dfy-honest{font-size:14px !important;line-height:1.6;color:var(--muted);border-left:2px solid rgba(255,255,255,.14);padding-left:14px;margin-bottom:16px !important}
+.dfy-honest strong{color:var(--white)}
+.dfy-price{font-family:var(--fM);font-size:13px !important;color:var(--white) !important;letter-spacing:.02em;margin-bottom:14px !important}
+.dfy-price strong{color:var(--signal)}
+.upsell.ongoing{background:rgba(255,255,255,.02);border-color:var(--border);margin-top:20px}
+.upsell.ongoing .kicker{color:var(--muted)}
 
 .sign{margin-top:40px;font-size:16px;color:var(--muted)}
 .sign strong{color:#fff;font-weight:700}
@@ -145,11 +158,28 @@ footer a:hover{color:var(--signal)}
   </div>
 
   <div class="upsell">
-    <p class="kicker">After you read the audit</p>
-    <h2>Want it fixed, not just found?</h2>
-    <p>The audit shows you exactly what is getting in the way of more calls. If you would rather not fix it alone, that is the work I do. I come in as a fractional operator: find the real constraint, fix it with the right tools for your business, and stay on to run it <strong>with</strong> you. No pushing one shiny tool at every problem. Just the specific thing in the way, handled.</p>
+    <p class="kicker">Would rather not touch the code?</p>
+    <h2>Want me to just make these changes for you?</h2>
+    <p>Your audit gives you the exact list and the order to work through it. If editing your own site is not how you want to spend your week, I will go in and implement the on-page fixes for you, on one site, done right, so the list is handled and off your plate.</p>
+    <ul class="dfy-list">
+      <li>The structured data that tells AI assistants what your business is, where it is, and what you do (LocalBusiness and Organization schema).</li>
+      <li>The files that let AI crawlers read and use your site (llms.txt, and robots.txt access so they are not locked out).</li>
+      <li>Your name and city made unmistakable in the spots that matter most (page title, main headline, key pages).</li>
+      <li>Your real profiles connected so the machines know they all point back to you.</li>
+      <li>The behind-the-scenes tags that describe your pages to search and AI, cleaned up.</li>
+    </ul>
+    <p class="dfy-honest"><strong>Straight talk:</strong> this is the implementation of the on-page fixes from your audit, done by me on one site. I will not promise you a ranking or that ChatGPT starts recommending you by name. Nobody honest can, because the platforms decide that, not me. What I control, and what was actually in your way, is this: your site becomes readable, clear, and correctly described to the tools people now use to find a business like yours. And I do not stop until every item on your checklist is implemented.</p>
+    <p class="dfy-price"><strong>$597.</strong> One site, one-time. I do these myself, so I only take a few each week.</p>
+    <a href="https://buy.stripe.com/eVq4gB1Hhb7Y4Va4EJgEg0j" class="btn">Have me do the fixes &rarr;</a>
+    <p class="meta">Once you buy, I reach out within one business day to start and tell you exactly what I need from you.</p>
+  </div>
+
+  <div class="upsell ongoing">
+    <p class="kicker">For the bigger, ongoing version</p>
+    <h2>Want someone to stay on it over time?</h2>
+    <p>The fix above is a one-time job on one site. If what you really want is someone who stays on and keeps your visibility current as these tools keep changing, that is the fractional operator work I do: find the real constraint, fix it with the right tools for your business, and run it <strong>with</strong> you. No pushing one shiny tool at every problem. Just the specific thing in the way, handled, and kept handled.</p>
     <p>If that is where your head is after you read the audit, reply to the delivery email and we will talk. No pressure, and the audit stands on its own either way.</p>
-    <a href="https://catalystworks.consulting" class="btn">See how I work &rarr;</a>
+    <a href="https://catalystworks.consulting" class="btn btn-ghost">See how I work &rarr;</a>
   </div>
 
   <p class="sign">Talk soon,<br><strong>Boubacar</strong></p>
