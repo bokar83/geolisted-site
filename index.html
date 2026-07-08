@@ -1247,20 +1247,30 @@
     const walk = (node) => {
       if (node.nodeType === 3) {
         const frag = document.createDocumentFragment();
+        // Group each word's char-spans in a nowrap wrapper so a word never
+        // breaks mid-character (inline-block chars are otherwise wrap points).
+        let word = null;
+        const flushWord = () => { if (word) { frag.appendChild(word); word = null; } };
         for (const ch of node.textContent) {
           if (ch === ' ' || ch === '\n') {
+            flushWord();
             frag.appendChild(document.createTextNode(' '));
           } else {
+            if (!word) {
+              word = document.createElement('span');
+              word.style.cssText = 'display:inline-block;white-space:nowrap;';
+            }
             const outer = document.createElement('span');
             outer.style.cssText = 'display:inline-block;overflow:hidden;';
             const inner = document.createElement('span');
             inner.style.display = 'inline-block';
             inner.textContent = ch;
             outer.appendChild(inner);
-            frag.appendChild(outer);
+            word.appendChild(outer);
             chars.push(inner);
           }
         }
+        flushWord();
         node.parentNode.replaceChild(frag, node);
       } else if (node.nodeType === 1) {
         Array.from(node.childNodes).forEach(walk);
