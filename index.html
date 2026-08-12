@@ -711,6 +711,19 @@
       .how-sub { text-align: left; }
       .steps-grid { grid-template-columns: 1fr; }
     }
+    /* 2026-08-11 SYS-532. The email capture section was a hardcoded inline
+       two-column grid with no breakpoint of its own. Below roughly 700px the
+       two columns each collapsed to about 160px, the headline overflowed off
+       the left edge of the screen, and the form sat in a strip too narrow to
+       use. This is the primary call to action on the site, so on a phone the
+       main capture was effectively unusable. Caught by rendering it at 375px
+       during the 2026-08-11 capture sweep; confirmed pre-existing by
+       rendering the previous commit at the same width. !important is needed
+       because the layout lives in an inline style attribute. */
+    @media (max-width: 700px) {
+      .capture-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
+      .capture-name-row { grid-template-columns: 1fr !important; }
+    }
     @media (max-width: 640px) {
       .hero { padding: 0 5% 60px; }
       .hero-split-row { flex-direction: column; align-items: flex-start; gap: 28px; }
@@ -1084,7 +1097,7 @@
 <!-- ── EMAIL CAPTURE ── -->
 <section style="padding:76px 5%;background:#0F1422;position:relative;overflow:hidden;" id="capture">
   <div style="position:absolute;top:-80px;right:-60px;width:440px;height:440px;background:radial-gradient(circle,rgba(0,229,255,.09) 0%,transparent 70%);pointer-events:none;"></div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:start;position:relative;z-index:1;">
+  <div class="capture-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:start;position:relative;z-index:1;">
     <div>
       <p style="font-family:'Inter',sans-serif;font-size:.62rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:#00E5FF;margin-bottom:13px;display:flex;align-items:center;gap:8px;" class="reveal"><span style="display:block;width:16px;height:1px;background:#00E5FF;"></span>Get Your Free Demo</p>
       <h2 style="font-family:'Syne',sans-serif;font-size:clamp(1.8rem,2.8vw,3.4rem);font-weight:800;line-height:.94;letter-spacing:-.03em;margin-bottom:16px;word-break:keep-all;" class="reveal">We build it for you.<br/><span style="color:#00E5FF;">For free.</span><br/>You decide after.</h2>
@@ -1098,7 +1111,7 @@
            this page ever took was dropped. Now posts to the lead capture API,
            which writes a real row to the leads store. -->
       <form id="capture-form" action="https://agentshq.boubacarbarry.com/api/orc/constraints-capture" method="POST" style="display:flex;flex-direction:column;gap:11px;" class="reveal">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;">
+        <div class="capture-name-row" style="display:grid;grid-template-columns:1fr 1fr;gap:11px;">
           <input type="text" name="name" placeholder="Your name" required style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:2px;padding:12px 14px;font-family:'Inter',sans-serif;font-size:.86rem;color:#F2F0EA;outline:none;width:100%;transition:border-color .2s;" onfocus="this.style.borderColor='#00E5FF';" onblur="this.style.borderColor='rgba(255,255,255,.08)';"/>
           <input type="text" name="business" placeholder="Business name" required style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:2px;padding:12px 14px;font-family:'Inter',sans-serif;font-size:.86rem;color:#F2F0EA;outline:none;width:100%;transition:border-color .2s;" onfocus="this.style.borderColor='#00E5FF';" onblur="this.style.borderColor='rgba(255,255,255,.08)';"/>
         </div>
