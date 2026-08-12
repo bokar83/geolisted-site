@@ -1092,7 +1092,12 @@
       <p style="font-size:.82rem;color:rgba(242,240,234,.65);line-height:1.7;margin-top:14px;" class="reveal">Want the numbers first? <a href="/rank-check" style="color:#00E5FF;text-decoration:underline;text-underline-offset:3px;">Run the free AI visibility scan</a> and see exactly where AI names you today, and who it names instead.</p>
     </div>
     <div>
-      <form id="capture-form" action="https://formspree.io/f/boubacar" method="POST" style="display:flex;flex-direction:column;gap:11px;" class="reveal">
+      <!-- 2026-08-11 SYS-525: action was https://formspree.io/f/boubacar, a
+           placeholder form id that never existed. Formspree answered every
+           submission with 404 {"code":"FORM_NOT_FOUND"}, so every demo request
+           this page ever took was dropped. Now posts to the lead capture API,
+           which writes a real row to the leads store. -->
+      <form id="capture-form" action="https://agentshq.boubacarbarry.com/api/orc/constraints-capture" method="POST" style="display:flex;flex-direction:column;gap:11px;" class="reveal">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;">
           <input type="text" name="name" placeholder="Your name" required style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:2px;padding:12px 14px;font-family:'Inter',sans-serif;font-size:.86rem;color:#F2F0EA;outline:none;width:100%;transition:border-color .2s;" onfocus="this.style.borderColor='#00E5FF';" onblur="this.style.borderColor='rgba(255,255,255,.08)';"/>
           <input type="text" name="business" placeholder="Business name" required style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:2px;padding:12px 14px;font-family:'Inter',sans-serif;font-size:.86rem;color:#F2F0EA;outline:none;width:100%;transition:border-color .2s;" onfocus="this.style.borderColor='#00E5FF';" onblur="this.style.borderColor='rgba(255,255,255,.08)';"/>
@@ -1103,6 +1108,7 @@
         <button type="submit" id="form-submit" style="background:#00E5FF;color:#080C16;font-family:'Syne',sans-serif;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border:none;padding:14px 20px;border-radius:2px;cursor:pointer;width:100%;transition:background .2s,box-shadow .2s;" onmouseenter="this.style.background='#FFB830';this.style.boxShadow='0 0 32px rgba(0,229,255,.28)';" onmouseleave="this.style.background='#00E5FF';this.style.boxShadow='none';"><span id="submit-text">Build My Free Demo</span></button>
         <p style="font-size:.68rem;color:rgba(242,240,234,.65);text-align:center;line-height:1.6;">No spam. No sales call. Your demo arrives within 48 hours.</p>
       </form>
+      <div id="form-error" style="display:none;margin-top:10px;padding:12px 14px;border:1px solid rgba(255,184,48,.5);border-radius:2px;background:rgba(255,184,48,.08);font-family:'Inter',sans-serif;font-size:.8rem;color:#FFB830;line-height:1.6;"></div>
       <div id="form-success" style="display:none;text-align:center;padding:28px;font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:#00E5FF;line-height:1.5;">Your demo request is in.<br/>Check your inbox within 48 hours.</div>
     </div>
   </div>
@@ -1542,27 +1548,104 @@
   // Hero uses Ken Burns photo animation -- no video fallback needed
 
   // ── FORM SUBMIT ──
+  // 2026-08-11 SYS-525 / SYS-528. Two defects fixed here at once:
+  //   1. The old handler POSTed FormData to a dead Formspree form id and got a
+  //      404 back on every single submission.
+  //   2. It decided success from `res.ok` alone. A capture API that answers
+  //      HTTP 200 with {"ok": false} — which is exactly how the lead capture
+  //      route behaved while it was switched off — would have read as a
+  //      success and shown the visitor a confirmation for a lead nobody has.
+  //      Success is now the response BODY saying ok === true, nothing less.
   var capForm = document.getElementById('capture-form');
   if (capForm) {
     capForm.addEventListener('submit', async function(e) {
       e.preventDefault();
       var btn = document.getElementById('submit-text');
+      var errEl = document.getElementById('form-error');
+      if (errEl) errEl.style.display = 'none';
       if (btn) btn.textContent = 'Sending...';
+
+      var fd = new FormData(capForm);
+      var email = (fd.get('email') || '').toString().trim();
+      var name = (fd.get('name') || '').toString().trim();
+      var business = (fd.get('business') || '').toString().trim();
+      var city = (fd.get('city') || '').toString().trim();
+      var niche = (fd.get('niche') || '').toString().trim();
+
+      function uuid(){
+        try { if (window.crypto && crypto.randomUUID) return crypto.randomUUID(); } catch(err){}
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c){
+          var r = Math.random()*16|0, v = c === 'x' ? r : (r&0x3|0x8);
+          return v.toString(16);
+        });
+      }
+
+      function fail(reason, detail) {
+        if (btn) btn.textContent = 'Try again';
+        if (errEl) {
+          errEl.textContent = 'That did not go through. Try again, or email boubacar@catalystworks.consulting and I will build it by hand.';
+          errEl.style.display = 'block';
+        }
+        try { console.error('[geolisted] lead capture FAILED', reason, detail); } catch(err){}
+        try { gtag('event', 'lead_capture_failed', { location: 'geolisted_demo_request', reason: reason }); } catch(err){}
+      }
+
       try {
         var res = await fetch(capForm.action, {
           method: 'POST',
-          headers: { 'Accept': 'application/json' },
-          body: new FormData(capForm)
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({
+            email: email,
+            // The capture route stores one free-text field. Everything the
+            // visitor typed goes in it so nothing is thrown away.
+            pain: 'Free AI presence demo request. Name: ' + name +
+                  '. Business: ' + business +
+                  '. City: ' + city +
+                  '. Industry: ' + niche + '.',
+            idempotency_key: uuid(),
+            source: 'geolisted_demo_request'
+          })
         });
-        if (res.ok) {
-          capForm.style.display = 'none';
-          var suc = document.getElementById('form-success');
-          if (suc) suc.style.display = 'block';
-        } else {
-          if (btn) btn.textContent = 'Try again';
+
+        var body = null;
+        try { body = await res.json(); } catch (parseErr) { body = null; }
+
+        // A 200 is NOT proof. The body has to say so.
+        if (!res.ok || !body || body.ok !== true) {
+          // Second destination rather than a lost lead. The address is the
+          // part that matters; if the full-detail route is unavailable for
+          // any reason, the email still lands on the list and a human can
+          // follow up. Only after BOTH fail does the visitor see an error.
+          try {
+            const alt = await fetch('https://agentshq.boubacarbarry.com/api/orc/beehiiv-subscribe', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                email: email,
+                name: name,
+                utm_source: 'geolisted',
+                form_location: 'geolisted_demo_request_fallback',
+                magnet: 'free_ai_presence_demo'
+              })
+            });
+            let altBody = null;
+            try { altBody = await alt.json(); } catch (e2) { altBody = null; }
+            const altOk = alt.ok && altBody && (altBody.ok === true || altBody.error === 'duplicate');
+            if (!altOk) { fail('both_destinations_failed', { primary: body, fallback: altBody }); return; }
+            try { console.warn('[geolisted] primary capture failed, email saved via fallback', body); } catch (e3) {}
+            try { gtag('event', 'lead_capture_fallback', { location: 'geolisted_demo_request' }); } catch (e3) {}
+          } catch (altErr) {
+            fail('both_destinations_failed', String(altErr));
+            return;
+          }
         }
+
+        capForm.style.display = 'none';
+        var suc = document.getElementById('form-success');
+        if (suc) suc.style.display = 'block';
+        try { gtag('event', 'generate_lead', { location: 'geolisted_demo_request' }); } catch(err){}
       } catch(err) {
-        if (btn) btn.textContent = 'Try again';
+        fail('network', String(err));
       }
     });
   }
