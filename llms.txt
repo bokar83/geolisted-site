@@ -1,0 +1,27 @@
+# Signal Works (geolisted.co)
+
+> Signal Works is a Catalyst Works product that builds AI presence for local businesses so they show up when someone asks ChatGPT, Perplexity, or Google AI who to call. Founded by Boubacar Barry, a Salt Lake City, Utah based advisor. The core offer is an AI Presence Build for local, owner-operated businesses (HVAC, roofing, dental, and similar service businesses), plus a free scan that shows a business whether it currently appears in AI answers.
+
+## What Signal Works does
+
+- [Free AI Visibility Scan](https://geolisted.co): A free, instant scan of a business's website that shows whether it is structured in a way AI assistants can find and cite.
+- [AI Presence Build](https://geolisted.co): Rebuilds a local business's structured data, entity clarity, and crawler access so it can appear in AI-generated answers, not just traditional search results.
+- Serves local service businesses, including HVAC, roofing, and dental practices, as example verticals.
+
+## Who it is for
+
+- Local, owner-operated service businesses who do not know whether they show up when a prospective customer asks an AI assistant for a recommendation.
+- Business owners who have already invested in traditional SEO but have not addressed AI-search readiness (schema, crawler access, entity clarity).
+
+## Key facts
+
+- Product: Signal Works, a Catalyst Works product
+- Founder: Boubacar Barry
+- Location: Salt Lake City, Utah, United States
+- Contact: boubacar@catalystworks.consulting
+- Parent company: Catalyst Works (https://catalystworks.consulting)
+
+## How to engage
+
+- Run the free scan at https://geolisted.co to see your current AI-visibility signals.
+- Or email boubacar@catalystworks.consulting to talk about an AI Presence Build for your business.
