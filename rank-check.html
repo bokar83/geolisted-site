@@ -432,7 +432,7 @@ footer::before{content:'';position:absolute;top:0;left:6%;right:6%;height:1px;ba
   <div class="score-block">
     <div class="score-num-block">
       <div class="score-num"><span id="scoreHits">0</span><span class="of">/<span id="scoreRuns">24</span></span></div>
-      <div class="score-label">AI appearances across 4 engines</div>
+      <div class="score-label" id="scoreLabel">AI appearances across 4 engines</div>
     </div>
     <div class="score-rate-block">
       <div class="score-rate" id="scoreRate">0% appearance rate</div>
@@ -440,17 +440,19 @@ footer::before{content:'';position:absolute;top:0;left:6%;right:6%;height:1px;ba
     </div>
   </div>
 
+  <div id="outageNote" style="display:none;border:1px solid rgba(255,184,48,.28);border-left:3px solid var(--gold);border-radius:8px;background:rgba(255,184,48,.05);padding:16px 20px;margin-bottom:40px;font-family:var(--fM);font-size:12.5px;line-height:1.7;color:var(--muted);"></div>
+
   <div class="interp" id="interpBlock">
     <div class="interp-h">What this means</div>
     <div id="interpBody"></div>
   </div>
 
   <h2 class="section-h">Per-engine <em>breakdown</em></h2>
-  <p class="section-sub">Six queries each. Hits = your business named in the answer.</p>
+  <p class="section-sub" id="engineSub">Six queries each. Hits = your business named in the answer.</p>
   <div class="engine-list" id="engineList"></div>
 
   <h2 class="section-h">Who AI <em>names instead</em></h2>
-  <p class="section-sub">Top competitors taking your spot across all 24 answers.</p>
+  <p class="section-sub" id="compSub">Top competitors taking your spot across every answer we scored.</p>
   <div class="comp-list" id="compList"></div>
 
   <h2 class="section-h">Sample <em>answers</em></h2>
@@ -458,10 +460,10 @@ footer::before{content:'';position:absolute;top:0;left:6%;right:6%;height:1px;ba
   <div class="sample" id="sampleList"></div>
 
   <div class="cta-row">
-    <a href="https://agentshq.boubacarbarry.com/api/orc/email/book/discovery" class="cta-card primary" target="_blank" rel="noopener">
-      <span class="cta-label">Recommended</span>
-      <span class="cta-title">Get this turned into a 90-day plan</span>
-      <span class="cta-arrow">Book strategy call
+    <a href="https://agentshq.boubacarbarry.com/api/orc/email/book/discovery" class="cta-card primary" id="ctaPrimary" target="_blank" rel="noopener">
+      <span class="cta-label" id="ctaPrimaryLabel">Recommended</span>
+      <span class="cta-title" id="ctaPrimaryTitle">Get this turned into a 90-day plan</span>
+      <span class="cta-arrow" id="ctaPrimaryAction">Book strategy call
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
       </span>
     </a>
@@ -510,7 +512,7 @@ footer::before{content:'';position:absolute;top:0;left:6%;right:6%;height:1px;ba
     <button class="faq-q">How does this work?
       <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
     </button>
-    <div class="faq-a"><p>We send <strong>6 real customer queries</strong> (e.g., "best chiropractor in South Jordan UT") to <strong>4 AI engines</strong> (ChatGPT, Claude, Perplexity, Google Gemini) and read the responses. We count how many times your business name appears across the 24 total answers, and we log everyone else who gets named.</p></div>
+    <div class="faq-a"><p>We send <strong>6 real customer queries</strong> (e.g., "best chiropractor in Salt Lake City UT") to <strong>4 AI engines</strong> (ChatGPT, Claude, Perplexity, Google Gemini) and read the responses. We count how many times your business name appears across the 24 total answers, and we log everyone else who gets named.</p></div>
   </div>
 
   <div class="faq-item">
@@ -550,7 +552,7 @@ footer::before{content:'';position:absolute;top:0;left:6%;right:6%;height:1px;ba
     <button class="faq-q">Who runs Signal Works?
       <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
     </button>
-    <div class="faq-a"><p>I am <strong>Boubacar Barry</strong>. I run Signal Works under <strong>Catalyst Works Consulting</strong> out of South Jordan UT. I am an operations builder, AI tinkerer, and 14-year operator. I focus on AI visibility for local service businesses because the gap between "ranking on Google" and "named by ChatGPT" is the next decade of small business marketing, and almost no one in this space is doing the work seriously yet.</p></div>
+    <div class="faq-a"><p>I am <strong>Boubacar Barry</strong>. I run Signal Works under <strong>Catalyst Works Consulting</strong> out of Salt Lake City UT. I am an operations builder, AI tinkerer, and 14-year operator. I focus on AI visibility for local service businesses because the gap between "ranking on Google" and "named by ChatGPT" is the next decade of small business marketing, and almost no one in this space is doing the work seriously yet.</p></div>
   </div>
 </section>
 
@@ -562,7 +564,7 @@ footer::before{content:'';position:absolute;top:0;left:6%;right:6%;height:1px;ba
       </span>
       Signal<em>.</em>Works
     </div>
-    <p class="fmeta">Built by <a href="https://catalystworks.consulting" target="_blank" rel="noopener">Catalyst Works Consulting</a>. South Jordan, UT.<br/>
+    <p class="fmeta">Built by <a href="https://catalystworks.consulting" target="_blank" rel="noopener">Catalyst Works Consulting</a>. Salt Lake City, UT.<br/>
     Contact: <a href="mailto:boubacar@catalystworks.consulting">boubacar@catalystworks.consulting</a></p>
   </div>
   <div class="f-right">
@@ -719,48 +721,53 @@ footer::before{content:'';position:absolute;top:0;left:6%;right:6%;height:1px;ba
     progressBar.style.width = "100%";
   }
 
-  function buildMockResult(payload){
-    var bn = payload.business_name || "Your business";
-    var ct = payload.city || "your city";
-    var nc = (payload.niche === "other" ? (payload.niche_other || "service") : payload.niche) || "service";
+  function normalizeBackend(data, payload){
+    if (!data || typeof data !== "object") return null;
+    if (data.engines && data.score && typeof data.score === "object") return data;
+    if (typeof data.score !== "string" || !data.by_engine) return null;
+
+    var parts = data.score.split("/");
+    var hits = parseInt(parts[0], 10);
+    var runs = parseInt(parts[1], 10);
+    if (isNaN(hits) || isNaN(runs)) return null;
+
+    var engines = Object.keys(data.by_engine).map(function(label){
+      var s = data.by_engine[label] || {};
+      return {
+        engine: label,
+        hits: s.hits || 0,
+        runs: s.runs || 0,
+        errors: s.errors || 0,
+        rate_pct: s.rate_pct || 0,
+        // An engine that never answered is unknown, not a zero.
+        unavailable: (s.runs || 0) === 0
+      };
+    });
+
     return {
-      mocked: true,
-      mock_note: "live backend wiring in progress, this is the actual result from our backend test 2026-05-20 22:30 MT for Acme AI, Moab UT, chiropractor",
-      business: { name: bn, city: ct, niche: nc },
-      score: { hits: 1, runs: 24, rate_pct: 4.2 },
-      engines: [
-        { engine: "ChatGPT", hits: 0, runs: 6, rate_pct: 0 },
-        { engine: "Claude", hits: 0, runs: 6, rate_pct: 0 },
-        { engine: "Perplexity", hits: 1, runs: 6, rate_pct: 16.7 },
-        { engine: "Gemini", hits: 0, runs: 6, rate_pct: 0 }
-      ],
-      competitors: [
-        { name: "Active Life Chiropractic", mentions: 14 },
-        { name: "South Jordan Chiropractic and Wellness", mentions: 11 },
-        { name: "Performance Chiropractic of Utah", mentions: 9 },
-        { name: "Daybreak Family Chiropractic", mentions: 7 },
-        { name: "The Joint Chiropractic", mentions: 6 }
-      ],
-      samples: [
-        {
-          engine: "Perplexity",
-          query: "best chiropractor in " + ct,
-          appeared: true,
-          answer: "For chiropractic care in " + ct + ", highly-rated options include Active Life Chiropractic, " + bn + ", and South Jordan Chiropractic and Wellness. " + bn + " is recommended by patients for sports and posture-related care."
-        },
-        {
-          engine: "ChatGPT",
-          query: "recommend a chiropractor near " + ct,
-          appeared: false,
-          answer: "A few well-reviewed chiropractors in the " + ct + " area are Active Life Chiropractic on Redwood Road, Performance Chiropractic of Utah, and Daybreak Family Chiropractic. All have strong Google ratings and offer initial consultations."
-        },
-        {
-          engine: "Claude",
-          query: "who is the top sports chiropractor in " + ct,
-          appeared: false,
-          answer: "For sports-focused chiropractic care in " + ct + ", most local recommendations point to Performance Chiropractic of Utah and Active Life Chiropractic. Both have experience with running, weightlifting, and recovery-focused adjustments."
-        }
-      ]
+      business: {
+        name: data.business_name || (payload && payload.business_name) || "",
+        city: data.city || (payload && payload.city) || "",
+        niche: data.niche || (payload && payload.niche) || ""
+      },
+      score: { hits: hits, runs: runs, rate_pct: data.appearance_rate_pct || 0 },
+      engines: engines,
+      competitors: (data.top_competitors || []).map(function(c){
+        return { name: c.name, mentions: c.mentions };
+      }),
+      samples: (data.sample_answers || []).map(function(s){
+        return {
+          engine: s.engine,
+          query: s.query,
+          appeared: !!s.appeared,
+          answer: s.excerpt || ""
+        };
+      }),
+      runs_attempted: data.runs_attempted || runs,
+      runs_failed: data.runs_failed || 0,
+      engines_unavailable: data.engines_unavailable || [],
+      scan_id: data.scan_id,
+      scanned_at_mt: data.scanned_at_mt
     };
   }
 
@@ -782,6 +789,51 @@ footer::before{content:'';position:absolute;top:0;left:6%;right:6%;height:1px;ba
     if (attrs) Object.keys(attrs).forEach(function(k){ e.setAttribute(k, attrs[k]); });
     if (txt != null) e.textContent = txt;
     return e;
+  }
+
+  // ── Score-band routing ──────────────────────────────────────────
+  // The next step depends on the result. Someone AI already names does
+  // not get sold the audit: the page tells them to keep their money.
+  var CAL_URL = "https://agentshq.boubacarbarry.com/api/orc/email/book/discovery";
+  var AUDIT_URL = "https://buy.stripe.com/3cI7sN85F0tkcnC4EJgEg0c";
+
+  function routeByScore(rate, biz){
+    var primary = document.getElementById("ctaPrimary");
+    var label = document.getElementById("ctaPrimaryLabel");
+    var title = document.getElementById("ctaPrimaryTitle");
+    var action = document.getElementById("ctaPrimaryAction");
+    var auditBlock = document.getElementById("audit");
+    if (!primary || !label || !title || !action) return;
+
+    var city = biz.city || "your area";
+
+    if (rate >= 75){
+      // Already visible. Nothing to sell, and saying so is the point.
+      label.textContent = "You do not need us right now";
+      title.textContent = "AI already names you. Keep your money.";
+      action.firstChild.nodeValue = "Re-run this in 90 days ";
+      primary.setAttribute("href", "https://geolisted.co/rank-check");
+      primary.removeAttribute("target");
+      if (auditBlock) auditBlock.style.display = "none";
+      return;
+    }
+
+    if (auditBlock) auditBlock.style.display = "";
+
+    if (rate < 25){
+      label.textContent = "Recommended";
+      title.textContent = "Find out why AI names everyone in " + city + " except you";
+      action.firstChild.nodeValue = "Book a strategy call ";
+      primary.setAttribute("href", CAL_URL);
+      primary.setAttribute("target", "_blank");
+    } else {
+      // Partial visibility. The cheaper, self-serve rung fits better than a call.
+      label.textContent = "Recommended";
+      title.textContent = "See who AI sends your customers to instead, and why";
+      action.firstChild.nodeValue = "Get the Walkthrough Audit ";
+      primary.setAttribute("href", AUDIT_URL);
+      primary.setAttribute("target", "_blank");
+    }
   }
 
   function renderResults(data){
@@ -831,6 +883,8 @@ footer::before{content:'';position:absolute;top:0;left:6%;right:6%;height:1px;ba
     interpBody.appendChild(p1);
     interpBody.appendChild(p2);
 
+    routeByScore(rate, biz);
+
     var engineList = document.getElementById("engineList");
     engineList.textContent = "";
     (data.engines || []).forEach(function(eng, i){
@@ -839,12 +893,39 @@ footer::before{content:'';position:absolute;top:0;left:6%;right:6%;height:1px;ba
       row.appendChild(el("div", { "class": "engine-num" }, "0" + (i+1)));
       row.appendChild(el("div", { "class": "engine-name" }, eng.engine));
       var hits = el("div", { "class": "engine-hits" });
-      hits.appendChild(el("strong", null, String(eng.hits)));
-      hits.appendChild(document.createTextNode(" / " + eng.runs));
-      row.appendChild(hits);
-      row.appendChild(el("div", { "class": "engine-pct" + (eng.hits === 0 ? " zero" : "") }, pctRounded + "%"));
+      if (eng.unavailable){
+        // Did not answer. Reporting this as 0% would be a made-up number.
+        hits.appendChild(el("strong", null, "–"));
+        hits.appendChild(document.createTextNode(" no response"));
+        row.appendChild(hits);
+        row.appendChild(el("div", { "class": "engine-pct" }, "n/a"));
+      } else {
+        hits.appendChild(el("strong", null, String(eng.hits)));
+        hits.appendChild(document.createTextNode(" / " + eng.runs));
+        row.appendChild(hits);
+        row.appendChild(el("div", { "class": "engine-pct" + (eng.hits === 0 ? " zero" : "") }, pctRounded + "%"));
+      }
       engineList.appendChild(row);
     });
+
+    // Never state a count the scan did not actually produce.
+    var answered = (data.engines || []).filter(function(e){ return !e.unavailable; });
+    var scoreLabel = document.getElementById("scoreLabel");
+    if (scoreLabel){
+      scoreLabel.textContent = "AI appearances across " + answered.length +
+        (answered.length === 1 ? " engine" : " engines");
+    }
+    var engineSub = document.getElementById("engineSub");
+    if (engineSub && answered.length){
+      engineSub.textContent = answered[0].runs +
+        " queries each. Hits = your business named in the answer.";
+    }
+
+    var compSub = document.getElementById("compSub");
+    if (compSub){
+      compSub.textContent = "Top competitors taking your spot across all " +
+        score.runs + " answers we scored.";
+    }
 
     var compList = document.getElementById("compList");
     compList.textContent = "";
@@ -908,9 +989,23 @@ footer::before{content:'';position:absolute;top:0;left:6%;right:6%;height:1px;ba
       });
     });
 
-    if (data.mocked && data.mock_note){
-      formBanner.textContent = data.mock_note;
-      formBanner.classList.add("show");
+    // Honest reporting when an engine could not be reached. An engine
+    // that did not answer is unknown, never a zero against the business.
+    // This sits inside the results view: the form banner is hidden once
+    // results render, so a notice put there would never be read.
+    var outageNote = document.getElementById("outageNote");
+    if (outageNote){
+      var down = data.engines_unavailable || [];
+      if (down.length){
+        outageNote.textContent = down.join(" and ") +
+          " did not respond during this scan, so " +
+          (down.length > 1 ? "those engines are" : "that engine is") +
+          " left out of the score rather than counted against you. Your score is out of " +
+          data.score.runs + " answers, not " + (data.runs_attempted || data.score.runs) + ".";
+        outageNote.style.display = "";
+      } else {
+        outageNote.style.display = "none";
+      }
     }
   }
 
@@ -960,23 +1055,23 @@ footer::before{content:'';position:absolute;top:0;left:6%;right:6%;height:1px;ba
       .then(function(data){
         stopLoading();
         loadingCard.classList.remove("show");
-        // Validate response shape: backend may return {error} or partial payload
-        var valid = data && !data.error && data.score && data.engines && data.engines.length > 0;
-        if (!valid){
-          // Fall back to mock so the page is functional
-          var mockData = buildMockResult(payload);
-          mockData.mock_note = "live backend wiring in progress, this is the actual result from our backend test 2026-05-20 22:30 MT for Acme AI, Moab UT, chiropractor";
-          document.getElementById("hero").style.display = "none";
-          resultsWrap.classList.add("show");
-          bumpQuota();
-          renderResults(mockData);
-          setTimeout(function(){ window.scrollTo({ top: 0, behavior: "smooth" }); }, 100);
+        // Never substitute a canned result for a real one. If the scan did
+        // not come back usable, say so plainly instead of showing someone
+        // another business's numbers under their own name.
+        var result = data && !data.error ? normalizeBackend(data, payload) : null;
+        if (!result || !result.engines.length){
+          formCard.style.display = "";
+          submitBtn.disabled = false;
+          errorTitle.textContent = "The scan did not complete";
+          errorMsg.textContent = "The engines did not return a usable answer for " +
+            (payload.business_name || "your business") + ". Nothing was scored, so there is no result to show you. Try again in a few minutes.";
+          errorCard.classList.add("show");
           return;
         }
         document.getElementById("hero").style.display = "none";
         resultsWrap.classList.add("show");
         bumpQuota();
-        renderResults(data);
+        renderResults(result);
         setTimeout(function(){ window.scrollTo({ top: 0, behavior: "smooth" }); }, 100);
       })
       .catch(function(err){
@@ -995,20 +1090,19 @@ footer::before{content:'';position:absolute;top:0;left:6%;right:6%;height:1px;ba
           return;
         }
 
-        if (isAbort || isNetwork || (err && err.code >= 500) || (err && err.code === undefined)){
-          var mockData = buildMockResult(payload);
-          document.getElementById("hero").style.display = "none";
-          resultsWrap.classList.add("show");
-          bumpQuota();
-          renderResults(mockData);
-          setTimeout(function(){ window.scrollTo({ top: 0, behavior: "smooth" }); }, 100);
-          return;
-        }
-
         formCard.style.display = "";
         submitBtn.disabled = false;
-        errorTitle.textContent = "Scanner had a hiccup";
-        errorMsg.textContent = "Refresh the page and try again. If it keeps failing, the backend may be offline. Code: " + (err.code || "unknown") + ".";
+
+        if (isAbort){
+          errorTitle.textContent = "The scan timed out";
+          errorMsg.textContent = "A full scan takes about 60 to 90 seconds and this run went past the limit. Your scan was not counted, so you still have today's. Try it again.";
+        } else if (isNetwork){
+          errorTitle.textContent = "Could not reach the scanner";
+          errorMsg.textContent = "The connection dropped before the scan finished. Check your connection and run it again.";
+        } else {
+          errorTitle.textContent = "The scan did not complete";
+          errorMsg.textContent = "Something went wrong on our side, so there is no result to show you. Try again in a few minutes. Code: " + (err.code || "unknown") + ".";
+        }
         errorCard.classList.add("show");
       });
   });
